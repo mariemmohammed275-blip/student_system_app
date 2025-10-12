@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// This widget listens to the auth state and navigates automatically
+// This widget listens to the auth state and navigates automatically
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
