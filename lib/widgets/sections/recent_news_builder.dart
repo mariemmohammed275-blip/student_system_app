@@ -7,9 +7,10 @@ class RecentNewsBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      scrollDirection: Axis.horizontal,
       itemCount: 3,
       itemBuilder: (context, index) {
-        return RecentNews();
+        return SizedBox(height: 300, width: 350, child: RecentNews());
       },
     );
   }
