@@ -19,6 +19,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -37,10 +38,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 15),
-              GestureDetector(
-                onTap: () {},
-                child: SizedBox(height: 260, child: EventBuilder()),
-              ),
+              SizedBox(height: 260, child: EventBuilder()),
               SizedBox(height: 30),
               Align(
                 alignment: Alignment.centerLeft,

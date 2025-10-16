@@ -7,12 +7,13 @@ class RecentNewsBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       itemCount: 3,
       itemBuilder: (context, index) {
         return SizedBox(
           height: 280,
-          width: 350,
+          width: 320,
           child: GestureDetector(onTap: () {}, child: RecentNews()),
         );
       },

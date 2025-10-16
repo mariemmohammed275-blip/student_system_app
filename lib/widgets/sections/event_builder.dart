@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:student_systemv1/models/event.dart';
+import 'package:student_systemv1/screens/settings_screen.dart';
 import 'package:student_systemv1/widgets/event_card.dart';
 
 class EventBuilder extends StatelessWidget {
@@ -28,10 +30,14 @@ class EventBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
       itemCount: eventList.length,
       itemBuilder: (context, index) {
-        return Event(event: eventList[index]);
+        return GestureDetector(
+          onTap: () {},
+          child: Event(event: eventList[index]),
+        );
       },
     );
   }
