@@ -10,7 +10,11 @@ class RecentNewsBuilder extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       itemCount: 3,
       itemBuilder: (context, index) {
-        return SizedBox(height: 300, width: 350, child: RecentNews());
+        return SizedBox(
+          height: 280,
+          width: 350,
+          child: GestureDetector(onTap: () {}, child: RecentNews()),
+        );
       },
     );
   }

@@ -37,7 +37,7 @@ class MainScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           color: Colors.white,
           buttonBackgroundColor: const Color(0xFF2A73FF),
-          height: 75,
+          height: 60,
           animationDuration: const Duration(milliseconds: 300),
           items: const [
             Icon(Icons.home_outlined, size: 30, color: Colors.black),
