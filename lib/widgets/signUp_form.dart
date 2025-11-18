@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:student_systemv1/Services/firebase_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:student_systemv1/Services/firebase_auth_service.dart';
 
 // -----------------------------------------------------------------
 // 1. GETX CONTROLLER (Manages State and Logic)
@@ -38,87 +38,92 @@ class SignUpController extends GetxController {
     Get.offNamed('/login');
   }
 
-  // CORE FIX: Navigate directly to the login screen after successful signup
-  Future<void> signUp() async {
-    isLoading.value = true; // Start loading
-
-    if (!passwordConfirmed()) {
-      Get.snackbar(
-        "Error",
-        "Passwords do not match.",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-      );
-      isLoading.value = false;
-      return;
-    }
-
-    try {
-      final userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim(),
-          );
-
-      if (userCredential.user != null) {
-        // Log the user out immediately to stop the AuthWrapper redirect to /home.
-        await FirebaseAuth.instance.signOut();
-
-        // Introduce a small delay to ensure Firebase state propagation.
-        await Future.delayed(const Duration(milliseconds: 50));
-
-        // --- FIX: Reset loading state right before navigation ---
-        isLoading.value = false;
-
-        // Navigate to Login Screen ('/login')
-        Get.offAllNamed('/login');
-
-        Get.snackbar(
-          "Success",
-          "Account created! Please log in.",
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green.withOpacity(0.8),
-          colorText: Colors.white,
-        );
-      } else {
-        throw Exception("Failed to create user account.");
-      }
-    } on FirebaseAuthException catch (e) {
-      String errorMessage = e.message ?? 'An unexpected error occurred.';
-
-      // Handle common errors
-      if (e.code == 'weak-password') {
-        errorMessage = 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        errorMessage = 'The account already exists for that email.';
-      } else if (e.code == 'invalid-email') {
-        errorMessage = 'The email address is not valid.';
-      }
-
-      // Show error feedback using GetX Snackbar
-      Get.snackbar(
-        "Sign Up Failed",
-        errorMessage,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-      );
-      // Ensure loading state is reset on error
-      isLoading.value = false;
-    } catch (e) {
-      // Handle non-Firebase errors
-      Get.snackbar(
-        "Error",
-        "An unexpected error occurred: ${e.toString()}",
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red.withOpacity(0.8),
-        colorText: Colors.white,
-      );
-      // Ensure loading state is reset on error
-      isLoading.value = false;
-    }
+  //put code of API here!!!!!!
+  void signUp() {
+    Get.offNamed('/login');
   }
+
+  // CORE FIX: Navigate directly to the login screen after successful signup
+  // Future<void> signUp() async {
+  //   isLoading.value = true; // Start loading
+
+  //   if (!passwordConfirmed()) {
+  //     Get.snackbar(
+  //       "Error",
+  //       "Passwords do not match.",
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red.withOpacity(0.8),
+  //       colorText: Colors.white,
+  //     );
+  //     isLoading.value = false;
+  //     return;
+  //   }
+
+  //   try {
+  //     final userCredential = await FirebaseAuth.instance
+  //         .createUserWithEmailAndPassword(
+  //           email: emailController.text.trim(),
+  //           password: passwordController.text.trim(),
+  //         );
+
+  //     if (userCredential.user != null) {
+  //       // Log the user out immediately to stop the AuthWrapper redirect to /home.
+  //       await FirebaseAuth.instance.signOut();
+
+  //       // Introduce a small delay to ensure Firebase state propagation.
+  //       await Future.delayed(const Duration(milliseconds: 50));
+
+  //       // --- FIX: Reset loading state right before navigation ---
+  //       isLoading.value = false;
+
+  //       // Navigate to Login Screen ('/login')
+  //       Get.offAllNamed('/login');
+
+  //       Get.snackbar(
+  //         "Success",
+  //         "Account created! Please log in.",
+  //         snackPosition: SnackPosition.TOP,
+  //         backgroundColor: Colors.green.withOpacity(0.8),
+  //         colorText: Colors.white,
+  //       );
+  //     } else {
+  //       throw Exception("Failed to create user account.");
+  //     }
+  //   } on FirebaseAuthException catch (e) {
+  //     String errorMessage = e.message ?? 'An unexpected error occurred.';
+
+  //     // Handle common errors
+  //     if (e.code == 'weak-password') {
+  //       errorMessage = 'The password provided is too weak.';
+  //     } else if (e.code == 'email-already-in-use') {
+  //       errorMessage = 'The account already exists for that email.';
+  //     } else if (e.code == 'invalid-email') {
+  //       errorMessage = 'The email address is not valid.';
+  //     }
+
+  //     // Show error feedback using GetX Snackbar
+  //     Get.snackbar(
+  //       "Sign Up Failed",
+  //       errorMessage,
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red.withOpacity(0.8),
+  //       colorText: Colors.white,
+  //     );
+  //     // Ensure loading state is reset on error
+  //     isLoading.value = false;
+  //   } catch (e) {
+  //     // Handle non-Firebase errors
+  //     Get.snackbar(
+  //       "Error",
+  //       "An unexpected error occurred: ${e.toString()}",
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red.withOpacity(0.8),
+  //       colorText: Colors.white,
+  //     );
+  //     // Ensure loading state is reset on error
+  //     isLoading.value = false;
+  //   }
+  // }
 
   @override
   void onClose() {

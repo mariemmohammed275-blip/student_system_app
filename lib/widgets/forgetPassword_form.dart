@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:student_systemv1/Services/firebase_auth_service.dart';
+//import 'package:student_systemv1/Services/firebase_auth_service.dart';
 
 class ForgotPasswordForm extends StatefulWidget {
   const ForgotPasswordForm({super.key});
@@ -167,9 +167,9 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm>
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () async {
-                      await FirebaseServices.resetPassword(
-                        _emailController.text.trim(),
-                      );
+                      // await FirebaseServices.resetPassword(
+                      //   _emailController.text.trim(),
+                      // );
                       _showSuccessDialog(context);
                     },
                     style: ElevatedButton.styleFrom(

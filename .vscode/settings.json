@@ -1,4 +1,8 @@
 {
+<<<<<<< Updated upstream
     "java.configuration.updateBuildConfiguration": "interactive",
     "cmake.sourceDirectory": "D:/flutter_projects/Graduation Project/student_system_app/linux"
+=======
+    "java.configuration.updateBuildConfiguration": "automatic"
+>>>>>>> Stashed changes
 }
