@@ -1,129 +1,86 @@
-//import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:student_systemv1/Services/firebase_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:student_systemv1/services/auth_service.dart';
+import '../models/student.dart';
 
 // -----------------------------------------------------------------
 // 1. GETX CONTROLLER (Manages State and Logic)
 // -----------------------------------------------------------------
 class SignUpController extends GetxController {
-  // Reactive States: Use .obs to make these variables observable (Rx)
   final isLoading = false.obs;
   final isPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;
 
-  // Text Controllers are defined here
   final fullNameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  // Logic functions
-  bool passwordConfirmed() {
+  final AuthService authService = AuthService();
+
+  bool passwordsMatch() {
     return passwordController.text.trim() ==
         confirmPasswordController.text.trim();
   }
 
-  void togglePasswordVisibility() {
-    isPasswordVisible.value = !isPasswordVisible.value;
+  void togglePasswordVisibility() =>
+      isPasswordVisible.value = !isPasswordVisible.value;
+  void toggleConfirmPasswordVisibility() =>
+      isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
+
+  void openLoginScreen() => Get.offNamed('/login');
+
+  Future<void> signUp() async {
+    if (!passwordsMatch()) {
+      Get.snackbar(
+        "Error",
+        "Passwords do not match.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    isLoading.value = true;
+    try {
+      Student? student = await authService.signUp(
+        fullName: fullNameController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        confirmPassword: confirmPasswordController.text.trim(),
+      );
+
+      if (student != null) {
+        Get.snackbar(
+          "Success",
+          "Account created! Please log in.",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green.withOpacity(0.8),
+          colorText: Colors.white,
+        );
+        openLoginScreen();
+      } else {
+        Get.snackbar(
+          "Sign Up Failed",
+          "Error creating account. Please try again.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.8),
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "An unexpected error occurred: $e",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
-
-  void toggleConfirmPasswordVisibility() {
-    isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
-  }
-
-  // Use Get.offNamed('/login')
-  void openLoginScreen() {
-    // Navigate using the GetX route name for the login form.
-    Get.offNamed('/login');
-  }
-
-  //put code of API here!!!!!!
-  void signUp() {
-    Get.offNamed('/login');
-  }
-
-  // CORE FIX: Navigate directly to the login screen after successful signup
-  // Future<void> signUp() async {
-  //   isLoading.value = true; // Start loading
-
-  //   if (!passwordConfirmed()) {
-  //     Get.snackbar(
-  //       "Error",
-  //       "Passwords do not match.",
-  //       snackPosition: SnackPosition.BOTTOM,
-  //       backgroundColor: Colors.red.withOpacity(0.8),
-  //       colorText: Colors.white,
-  //     );
-  //     isLoading.value = false;
-  //     return;
-  //   }
-
-  //   try {
-  //     final userCredential = await FirebaseAuth.instance
-  //         .createUserWithEmailAndPassword(
-  //           email: emailController.text.trim(),
-  //           password: passwordController.text.trim(),
-  //         );
-
-  //     if (userCredential.user != null) {
-  //       // Log the user out immediately to stop the AuthWrapper redirect to /home.
-  //       await FirebaseAuth.instance.signOut();
-
-  //       // Introduce a small delay to ensure Firebase state propagation.
-  //       await Future.delayed(const Duration(milliseconds: 50));
-
-  //       // --- FIX: Reset loading state right before navigation ---
-  //       isLoading.value = false;
-
-  //       // Navigate to Login Screen ('/login')
-  //       Get.offAllNamed('/login');
-
-  //       Get.snackbar(
-  //         "Success",
-  //         "Account created! Please log in.",
-  //         snackPosition: SnackPosition.TOP,
-  //         backgroundColor: Colors.green.withOpacity(0.8),
-  //         colorText: Colors.white,
-  //       );
-  //     } else {
-  //       throw Exception("Failed to create user account.");
-  //     }
-  //   } on FirebaseAuthException catch (e) {
-  //     String errorMessage = e.message ?? 'An unexpected error occurred.';
-
-  //     // Handle common errors
-  //     if (e.code == 'weak-password') {
-  //       errorMessage = 'The password provided is too weak.';
-  //     } else if (e.code == 'email-already-in-use') {
-  //       errorMessage = 'The account already exists for that email.';
-  //     } else if (e.code == 'invalid-email') {
-  //       errorMessage = 'The email address is not valid.';
-  //     }
-
-  //     // Show error feedback using GetX Snackbar
-  //     Get.snackbar(
-  //       "Sign Up Failed",
-  //       errorMessage,
-  //       snackPosition: SnackPosition.BOTTOM,
-  //       backgroundColor: Colors.red.withOpacity(0.8),
-  //       colorText: Colors.white,
-  //     );
-  //     // Ensure loading state is reset on error
-  //     isLoading.value = false;
-  //   } catch (e) {
-  //     // Handle non-Firebase errors
-  //     Get.snackbar(
-  //       "Error",
-  //       "An unexpected error occurred: ${e.toString()}",
-  //       snackPosition: SnackPosition.BOTTOM,
-  //       backgroundColor: Colors.red.withOpacity(0.8),
-  //       colorText: Colors.white,
-  //     );
-  //     // Ensure loading state is reset on error
-  //     isLoading.value = false;
-  //   }
-  // }
 
   @override
   void onClose() {
@@ -143,7 +100,6 @@ class SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize and find the controller
     final controller = Get.put(SignUpController());
 
     return Scaffold(
@@ -155,7 +111,6 @@ class SignUpForm extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //Title
                   const Text(
                     "Sign Up",
                     style: TextStyle(
@@ -164,10 +119,9 @@ class SignUpForm extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 40),
 
-                  // Full name
+                  // Full Name
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -219,7 +173,6 @@ class SignUpForm extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Obx rebuilds only this widget when controller.isPasswordVisible changes
                   Obx(
                     () => TextField(
                       controller: controller.passwordController,
@@ -279,7 +232,6 @@ class SignUpForm extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     height: 50,
-                    // Obx rebuilds the button when controller.isLoading changes
                     child: Obx(
                       () => ElevatedButton(
                         onPressed: controller.isLoading.value

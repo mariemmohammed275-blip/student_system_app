@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../Services/api_service.dart'; // <-- make sure this path is correct
+import 'package:student_systemv1/services/auth_service.dart';
+import '../models/student.dart';
 
 // -----------------------------------------------------------------
 // 1. GETX CONTROLLER (Manages State and Logic)
 // -----------------------------------------------------------------
 class LoginController extends GetxController {
-  // Reactive States
   final isLoading = false.obs;
   final isPasswordVisible = false.obs;
   final rememberMe = false.obs;
 
-  // Text Controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  final AuthService authService = AuthService();
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
@@ -23,7 +24,6 @@ class LoginController extends GetxController {
     rememberMe.value = value ?? false;
   }
 
-  // Login function using ApiService
   Future<void> login() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
@@ -43,10 +43,12 @@ class LoginController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response = await ApiService.login(email: email, password: password);
+      Student? student = await authService.login(
+        email: email,
+        password: password,
+      );
 
-      if (response != null && response['student_id'] != null) {
-        // Login successful, navigate to home
+      if (student != null) {
         Get.offAllNamed('/home');
         Get.snackbar(
           "Success",
@@ -69,7 +71,7 @@ class LoginController extends GetxController {
     } catch (e) {
       Get.snackbar(
         "Error",
-        "An unexpected error occurred: ${e.toString()}",
+        "An unexpected error occurred: $e",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.withOpacity(0.8),
         colorText: Colors.white,
@@ -80,13 +82,8 @@ class LoginController extends GetxController {
     }
   }
 
-  void openSignUpScreen() {
-    Get.offNamed('/signup');
-  }
-
-  void forgetPasswordScreen() {
-    Get.toNamed('/forgot');
-  }
+  void openSignUpScreen() => Get.offNamed('/signup');
+  void forgetPasswordScreen() => Get.toNamed('/forgot');
 
   @override
   void onClose() {
@@ -119,7 +116,7 @@ class LoginForm extends StatelessWidget {
                     "Login",
                     style: TextStyle(
                       color: Color(0xFF0D47A1),
-                      fontSize: 35.0,
+                      fontSize: 35,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
