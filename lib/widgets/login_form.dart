@@ -1,8 +1,6 @@
-//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:student_systemv1/Screens/home_screen.dart'; // Keeping for reference of original structure
-//import 'package:student_systemv1/Services/firebase_auth_service.dart';
+import '../Services/api_service.dart'; // <-- make sure this path is correct
 
 // -----------------------------------------------------------------
 // 1. GETX CONTROLLER (Manages State and Logic)
@@ -25,68 +23,68 @@ class LoginController extends GetxController {
     rememberMe.value = value ?? false;
   }
 
-  //put code of API here!!!!!!
-  void login() {
-    Get.offNamed('/home');
+  // Login function using ApiService
+  Future<void> login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Email and password cannot be empty.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      final response = await ApiService.login(email: email, password: password);
+
+      if (response != null && response['student_id'] != null) {
+        // Login successful, navigate to home
+        Get.offAllNamed('/home');
+        Get.snackbar(
+          "Success",
+          "Logged in successfully!",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green.withOpacity(0.8),
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      } else {
+        Get.snackbar(
+          "Login Failed",
+          "Invalid email or password.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.8),
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "An unexpected error occurred: ${e.toString()}",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  // Use Get.offAllNamed('/home') for successful login
-  // Future<void> login() async {
-  //   isLoading.value = true;
-
-  //   try {
-  //     await FirebaseAuth.instance.signInWithEmailAndPassword(
-  //       email: emailController.text.trim(),
-  //       password: passwordController.text.trim(),
-  //     );
-
-  //     // Successfully logged in. Navigate to home screen and clear stack.
-  //     // The AuthWrapper will actually handle the final redirect to /home
-  //     // when the state changes, but this is a clean way to initiate it.
-  //     Get.offAllNamed('/home');
-  //   } on FirebaseAuthException catch (e) {
-  //     String errorMessage = 'An unexpected error occurred.';
-
-  //     if (e.code == 'user-not-found' ||
-  //         e.code == 'wrong-password' ||
-  //         e.code == 'invalid-credential') {
-  //       errorMessage = 'Invalid email or password.';
-  //     } else if (e.code == 'invalid-email') {
-  //       errorMessage = 'The email address is not valid.';
-  //     }
-
-  //     // Show error feedback using GetX Snackbar
-  //     Get.snackbar(
-  //       "Login Failed",
-  //       errorMessage,
-  //       snackPosition: SnackPosition.BOTTOM,
-  //       backgroundColor: Colors.red.withOpacity(0.8),
-  //       colorText: Colors.white,
-  //     );
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       "Login Failed",
-  //       "An unexpected error occurred: ${e.toString()}",
-  //       snackPosition: SnackPosition.BOTTOM,
-  //       backgroundColor: Colors.red.withOpacity(0.8),
-  //       colorText: Colors.white,
-  //     );
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
-
-  // This function was the source of the navigation error in your original file.
   void openSignUpScreen() {
-    // FIX: Navigate using the correct GetX route name '/signup'.
-    // We use offNamed to replace the LoginForm in the navigation stack.
     Get.offNamed('/signup');
   }
 
-  // Use Get.toNamed('/forgot')
   void forgetPasswordScreen() {
-    // FIX: Navigate using the GetX route name for the forgot password form.
-    // We use toNamed because the user should be able to press back to return here.
     Get.toNamed('/forgot');
   }
 
@@ -106,7 +104,6 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize and find the controller
     final controller = Get.put(LoginController());
 
     return Scaffold(
@@ -118,7 +115,6 @@ class LoginForm extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //title
                   const Text(
                     "Login",
                     style: TextStyle(
@@ -160,7 +156,6 @@ class LoginForm extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Obx rebuilds only the visibility icon and obscureText property
                   Obx(
                     () => TextField(
                       controller: controller.passwordController,
@@ -190,7 +185,6 @@ class LoginForm extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          // Obx rebuilds only the Checkbox when rememberMe changes
                           Obx(
                             () => Checkbox(
                               value: controller.rememberMe.value,
@@ -215,7 +209,6 @@ class LoginForm extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     height: 50,
-                    // Obx rebuilds the button when isLoading changes
                     child: Obx(
                       () => ElevatedButton(
                         onPressed: controller.isLoading.value
@@ -251,7 +244,6 @@ class LoginForm extends StatelessWidget {
                     children: [
                       const Text("Don’t have an account? "),
                       GestureDetector(
-                        // This calls the fixed openSignUpScreen method
                         onTap: controller.openSignUpScreen,
                         child: const Text(
                           "Sign Up",
