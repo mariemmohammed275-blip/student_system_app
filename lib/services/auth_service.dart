@@ -1,14 +1,9 @@
-import 'package:dio/dio.dart';
 import 'package:student_systemv1/models/student.dart';
+import 'api_service.dart';
 
 class AuthService {
-  final Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: "http://192.168.1.3:5000/api/students",
-      // this is my ip address, don't forget to change it to your own ip
-      headers: {"Content-Type": "application/json"},
-    ),
-  );
+  // Global logged-in student
+  static Student? currentStudent;
 
   // ---------------------
   // Sign Up
@@ -20,48 +15,49 @@ class AuthService {
     required String confirmPassword,
   }) async {
     try {
-      final response = await _dio.post(
-        "/signup",
-        data: {
-          "full_name": fullName,
-          "email": email,
-          "password": password,
-          "confirm_password": confirmPassword,
-        },
+      final response = await ApiService.signup(
+        fullName: fullName,
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword,
       );
 
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        return Student.fromJson(response.data["student"]);
+      if (response.containsKey('student')) {
+        final student = Student.fromJson(response['student']);
+        return student;
       } else {
-        print("Sign Up failed: ${response.data}");
+        print('Sign Up failed: ${response['message']}');
         return null;
       }
     } catch (e) {
-      print("Sign Up error: $e");
+      print('Sign Up error: $e');
       return null;
     }
   }
 
+  // ---------------------
   // Login
+  // ---------------------
   Future<Student?> login({
     required String email,
     required String password,
   }) async {
     try {
-      final response = await _dio.post(
-        "/login",
-        data: {"email": email, "password": password},
-      );
-
-      if (response.statusCode == 200) {
-        return Student.fromJson(response.data["student"]);
-      } else {
-        print("Login failed: ${response.data}");
-        return null;
+      final student = await ApiService.login(email: email, password: password);
+      if (student != null) {
+        currentStudent = student; // Save globally
       }
+      return student;
     } catch (e) {
-      print("Login error: $e");
+      print('Login error: $e');
       return null;
     }
+  }
+
+  // ---------------------
+  // Logout
+  // ---------------------
+  void logout() {
+    currentStudent = null;
   }
 }

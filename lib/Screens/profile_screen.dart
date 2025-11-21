@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:student_systemv1/services/auth_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final student = AuthService.currentStudent;
+
     return Scaffold(
       //backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -26,13 +29,13 @@ class ProfileScreen extends StatelessWidget {
                     backgroundImage: AssetImage("assets/images/student.png"),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    "Abdelrahman Samy",
+                  Text(
+                    student?.fullName ?? "Student Name",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    "Student ID: 202110245",
+                  Text(
+                    "Student ID: ${student?.studentId ?? 'N/A'}",
                     style: TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                   const SizedBox(height: 4),
@@ -99,11 +102,14 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  _InfoRow(title: "Email", value: "abdelrahman@example.com"),
+                  _InfoRow(title: "Email", value: student?.email ?? "N/A"),
                   const Divider(),
-                  _InfoRow(title: "Phone", value: "+20 123 456 789"),
+                  _InfoRow(title: "Phone", value: student?.phone ?? "N/A"),
                   const Divider(),
-                  _InfoRow(title: "Major", value: "Computer and Systems"),
+                  _InfoRow(
+                    title: "Major",
+                    value: student?.departmentName ?? "N/A",
+                  ),
                   const Divider(),
                   _InfoRow(title: "City", value: "Cairo"),
                 ],
@@ -112,26 +118,24 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFA8845F),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: const Text(
-                  "Edit Personal Info",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: ElevatedButton(
+            //     onPressed: () {},
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: Color(0xFFA8845F),
+            //       shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(14),
+            //       ),
+            //       padding: const EdgeInsets.symmetric(vertical: 14),
+            //     ),
+            //     child: const Text(
+            //       "Edit Personal Info",
+            //       style: TextStyle(color: Colors.white),
+            //     ),
+            //   ),
+            // ),
+            //const SizedBox(height: 30),
             const Text(
               "Academic Advisor",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

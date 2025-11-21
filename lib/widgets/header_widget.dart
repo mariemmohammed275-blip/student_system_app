@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:student_systemv1/services/auth_service.dart';
 
 class Header extends StatelessWidget {
   const Header({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final student = AuthService.currentStudent; // get logged-in student
+    final name = student?.fullName ?? "Student";
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -20,7 +24,7 @@ class Header extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Hi, Samy',
+                'Hi, $name',
                 style: TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 20,

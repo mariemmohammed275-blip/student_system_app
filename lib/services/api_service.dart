@@ -1,4 +1,3 @@
-// File: services/api_service.dart
 import 'package:dio/dio.dart';
 import '../models/student.dart';
 
@@ -57,14 +56,14 @@ class ApiService {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        return Student.fromJson(response.data);
+        final studentJson = response.data['student'];
+        return Student.fromJson(studentJson);
       } else {
         return null; // Login failed
       }
     } on DioError catch (e) {
-      throw Exception(
-        'Network or server error: ${e.response?.data ?? e.message}',
-      );
+      print('Login error: ${e.response?.data ?? e.message}');
+      return null;
     }
   }
 }
