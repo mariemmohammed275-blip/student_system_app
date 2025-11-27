@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:student_systemv1/widgets/announcement_widget.dart';
 import 'package:student_systemv1/widgets/sections/event_builder.dart';
 import 'package:student_systemv1/widgets/sections/recent_news_builder.dart';
-import '../widgets/header_widget.dart';
+import '../../widgets/header_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

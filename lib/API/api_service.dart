@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import '../models/student.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.1.3:5000/api';
+  static const String baseUrl = 'http://192.168.20.1:5000/api';
   static final Dio _dio = Dio(
     BaseOptions(
       baseUrl: baseUrl,

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:student_systemv1/widgets/forgetPassword_form.dart';
 import 'package:student_systemv1/widgets/login_form.dart';
 import 'package:student_systemv1/widgets/signUp_form.dart';
-import 'package:student_systemv1/screens/main_screen.dart';
+import 'package:student_systemv1/Screens/main_screen.dart';
 import 'package:student_systemv1/screens/splash_screen.dart';
 
+import 'Screens/Services/Features/CourseEnrollment/course_controller.dart';
+
 void main() {
+  Get.put(CourseController());
   runApp(const MyApp());
 }
 

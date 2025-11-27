@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'home_screen.dart';
-import 'services_screen.dart';
-import 'community_screen.dart';
-import 'profile_screen.dart';
-import 'settings_screen.dart';
+import 'Home/home_screen.dart';
+import 'Services/services_screen.dart';
+import 'Community/community_screen.dart';
+import 'Profile/profile_screen.dart';
+import 'Setting/settings_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -24,10 +24,7 @@ class MainScreen extends StatelessWidget {
               Get.to(() => const HomeScreen(), transition: Transition.fadeIn);
               break;
             case 1:
-              Get.to(
-                () => const ServicesScreen(),
-                transition: Transition.fadeIn,
-              );
+              Get.to(() => ServicesScreen(), transition: Transition.fadeIn);
               break;
             case 2:
               Get.to(

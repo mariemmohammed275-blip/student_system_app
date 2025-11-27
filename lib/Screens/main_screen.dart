@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'home_screen.dart';
-import 'services_screen.dart';
-import 'community_screen.dart';
-import 'profile_screen.dart';
-import 'settings_screen.dart';
+import 'Home/home_screen.dart';
+import 'Services/services_screen.dart';
+import 'Community/community_screen.dart';
+import 'Profile/profile_screen.dart';
+import 'Setting/settings_screen.dart';
 
 // Controller to manage navigation state
 class NavController extends GetxController {
   var selectedIndex = 0.obs;
 
   final screens = [
-    const HomeScreen(),
-    const ServicesScreen(),
-    const CommunityScreen(),
-    const ProfileScreen(),
-    const SettingsScreen(),
+    () => const HomeScreen(),
+    () => ServicesScreen(),
+    () => const CommunityScreen(),
+    () => const ProfileScreen(),
+    () => const SettingsScreen(),
   ];
 }
 
@@ -30,7 +30,7 @@ class MainScreen extends StatelessWidget {
     return Obx(
       () => Scaffold(
         extendBody: true,
-        body: navController.screens[navController.selectedIndex.value],
+        body: navController.screens[navController.selectedIndex.value](),
 
         bottomNavigationBar: CurvedNavigationBar(
           index: navController.selectedIndex.value,
