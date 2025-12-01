@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../models/student.dart';
 
 class ApiService {
   static const String baseUrl = 'http://192.168.1.5:5000/api';
