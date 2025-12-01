@@ -10,6 +10,7 @@ class Student {
   final String enrollmentStatus;
   final String departmentName;
   final int coursesCount;
+  final List<String> courses; // ← add this
 
   Student({
     required this.id,
@@ -23,6 +24,7 @@ class Student {
     required this.enrollmentStatus,
     required this.departmentName,
     required this.coursesCount,
+    required this.courses, // ← add this
   });
 
   factory Student.fromJson(Map<String, dynamic> json) {
@@ -36,10 +38,11 @@ class Student {
       dob: json["dob"] ?? "",
       address: json["address"] ?? "",
       enrollmentStatus: json["enrollment_status"] ?? "",
-
       departmentName: json["department_id"]?["dept_name"] ?? "",
-
       coursesCount: json["courses"] != null ? json["courses"].length : 0,
+      courses: json["courses"] != null
+          ? List<String>.from(json["courses"])
+          : [], // ← parse course IDs
     );
   }
 }

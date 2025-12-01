@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'Features/Exams/exams.dart';
-import 'Features/SelectedCourses/SelectedCourses.dart';
+import 'Features/SelectedCourses/selected_courses.dart';
 import 'Features/Attendance/attendance.dart';
 import 'Features/CourseEnrollment/course_enrollment.dart';
 import 'Features/OnlineMeeting/online_meeting.dart';

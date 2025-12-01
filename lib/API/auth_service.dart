@@ -1,8 +1,11 @@
+import 'package:student_systemv1/API/course_api.dart';
 import 'package:student_systemv1/models/student.dart';
 import 'api_service.dart';
 
 class AuthService {
+  // ---------------------
   // Global logged-in student
+  // ---------------------
   static Student? currentStudent;
 
   // ---------------------
@@ -43,10 +46,22 @@ class AuthService {
     required String password,
   }) async {
     try {
-      final student = await ApiService.login(email: email, password: password);
-      if (student != null) {
-        currentStudent = student; // Save globally
-      }
+      // Use loginRaw to get full response including token
+      final response = await ApiService.loginRaw(
+        email: email,
+        password: password,
+      );
+
+      if (response == null) return null;
+
+      // Extract student info
+      final student = Student.fromJson(response["student"]);
+      currentStudent = student;
+
+      // Extract token and store it in CourseAPI
+      CourseAPI.token = response["token"];
+      print("Login successful. Token set for CourseAPI.");
+
       return student;
     } catch (e) {
       print('Login error: $e');
@@ -59,5 +74,7 @@ class AuthService {
   // ---------------------
   void logout() {
     currentStudent = null;
+    CourseAPI.token = ""; // Clear token on logout
+    print("User logged out and token cleared.");
   }
 }

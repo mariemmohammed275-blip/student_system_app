@@ -3,14 +3,13 @@ import 'package:dio/dio.dart';
 class CourseAPI {
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: "http://192.168.20.1:5000/api",
+      baseUrl: "http://192.168.1.5:5000/api",
       connectTimeout: Duration(seconds: 10),
       receiveTimeout: Duration(seconds: 10),
     ),
   );
 
-  static String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjgyYWI2ZDhmMzIyMGI5ZDJkYzE1YSIsImVtYWlsIjoic2hhaGRhYWFAZ21haWwuY29tIiwiaWF0IjoxNzY0MjQwMTI2LCJleHAiOjE3NjQ4NDQ5MjZ9.wtucSVOoxkAwq_CKI_UcvLB8r-Fgkq7kUD2-X6dJKoo"; // ← خليه يتملّى بعد اللوجين
+  static String token = "";
 
   // GET student courses
   static Future<List<Map<String, dynamic>>> getAllCourses() async {

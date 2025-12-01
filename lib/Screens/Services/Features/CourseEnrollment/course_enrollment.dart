@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:student_systemv1/Screens/Services/Features/SelectedCourses/SelectedCourses.dart';
+import 'package:student_systemv1/Screens/Services/Features/SelectedCourses/selected_courses.dart';
 import 'course_controller.dart';
 
 class CourseEnrollment extends StatefulWidget {

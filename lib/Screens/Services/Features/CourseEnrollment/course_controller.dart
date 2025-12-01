@@ -1,17 +1,31 @@
 import 'package:get/get.dart';
+import 'package:student_systemv1/API/auth_service.dart';
 import 'package:student_systemv1/API/course_api.dart';
 
 class CourseController extends GetxController {
   var allCourses = <Map<String, dynamic>>[].obs;
   var selectedCourses = <Map<String, dynamic>>[].obs;
 
-  String studentId = "69282ab6d8f3220b9d2dc15a"; // ← هتجيبيها بعد اللوجين
+  String studentId = AuthService.currentStudent?.id ?? "";
 
   // Load all courses from API
   Future<void> fetchCourses() async {
     try {
+      studentId = AuthService.currentStudent?.id ?? "";
+
       final data = await CourseAPI.getAllCourses();
       allCourses.assignAll(data);
+
+      // Mark courses already enrolled
+      selectedCourses.assignAll(
+        allCourses
+            .where(
+              (course) =>
+                  AuthService.currentStudent?.courses.contains(course["_id"]) ??
+                  false,
+            )
+            .toList(),
+      );
     } catch (e) {
       print("Error fetching courses: $e");
     }

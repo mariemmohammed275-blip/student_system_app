@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import '../models/student.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.20.1:5000/api';
+  static const String baseUrl = 'http://192.168.1.5:5000/api';
   static final Dio _dio = Dio(
     BaseOptions(
       baseUrl: baseUrl,
@@ -45,7 +45,7 @@ class ApiService {
   // -----------------------------
   // LOGIN API
   // -----------------------------
-  static Future<Student?> login({
+  static Future<Map<String, dynamic>?> loginRaw({
     required String email,
     required String password,
   }) async {
@@ -55,14 +55,12 @@ class ApiService {
         data: {"email": email, "password": password},
       );
 
-      if (response.statusCode == 200 && response.data != null) {
-        final studentJson = response.data['student'];
-        return Student.fromJson(studentJson);
-      } else {
-        return null; // Login failed
+      if (response.statusCode == 200) {
+        return response.data;
       }
+      return null;
     } on DioError catch (e) {
-      print('Login error: ${e.response?.data ?? e.message}');
+      print("Login error: ${e.response?.data ?? e.message}");
       return null;
     }
   }
