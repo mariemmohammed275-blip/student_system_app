@@ -14,7 +14,7 @@ class _CourseEnrollmentState extends State<CourseEnrollment> {
   @override
   void initState() {
     super.initState();
-    controller.fetchCourses();
+    controller.fetchCourses(); // fetch all courses and separate unenrolled
   }
 
   @override
@@ -22,8 +22,19 @@ class _CourseEnrollmentState extends State<CourseEnrollment> {
     return Scaffold(
       appBar: AppBar(title: Text("Course Enrollment"), centerTitle: true),
       body: Obx(() {
+        // Show loading while courses are fetched
         if (controller.allCourses.isEmpty) {
           return Center(child: CircularProgressIndicator());
+        }
+
+        // If there are no unenrolled courses
+        if (controller.unenrolledCourses.isEmpty) {
+          return Center(
+            child: Text(
+              "No courses available to enroll.",
+              style: TextStyle(fontSize: 18, color: Colors.black54),
+            ),
+          );
         }
 
         return Padding(
@@ -38,9 +49,9 @@ class _CourseEnrollmentState extends State<CourseEnrollment> {
                     crossAxisSpacing: 16,
                     childAspectRatio: 0.9,
                   ),
-                  itemCount: controller.allCourses.length,
+                  itemCount: controller.unenrolledCourses.length,
                   itemBuilder: (context, index) {
-                    final course = controller.allCourses[index];
+                    final course = controller.unenrolledCourses[index];
                     final bool added = controller.isAdded(course["_id"]);
 
                     return CourseBox(
@@ -80,12 +91,13 @@ class CourseBox extends StatelessWidget {
   final bool isAdded;
   final VoidCallback onAdd;
 
-  CourseBox({
+  const CourseBox({
+    Key? key,
     required this.name,
     required this.code,
     required this.isAdded,
     required this.onAdd,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

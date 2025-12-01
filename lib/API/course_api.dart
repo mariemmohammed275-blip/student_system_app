@@ -11,16 +11,16 @@ class CourseAPI {
 
   static String token = "";
 
-  // GET student courses
+  // GET all courses
   static Future<List<Map<String, dynamic>>> getAllCourses() async {
     try {
       final response = await dio.get(
-        "/students/courses",
+        "/courses", // changed from /students/courses
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
 
       if (response.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(response.data["courses"]);
+        return List<Map<String, dynamic>>.from(response.data);
       }
 
       return [];

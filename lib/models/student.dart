@@ -10,7 +10,7 @@ class Student {
   final String enrollmentStatus;
   final String departmentName;
   final int coursesCount;
-  final List<String> courses; // ← add this
+  final List<String> courses; // List of enrolled course IDs
 
   Student({
     required this.id,
@@ -24,10 +24,24 @@ class Student {
     required this.enrollmentStatus,
     required this.departmentName,
     required this.coursesCount,
-    required this.courses, // ← add this
+    required this.courses,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) {
+    // Safely parse courses
+    List<String> courseIds = [];
+    if (json["courses"] != null) {
+      courseIds = List<String>.from(
+        json["courses"].map((c) {
+          if (c is Map && c.containsKey("_id")) {
+            return c["_id"].toString();
+          } else {
+            return c.toString();
+          }
+        }),
+      );
+    }
+
     return Student(
       id: json["_id"] ?? "",
       studentId: json["student_id"] ?? "",
@@ -39,10 +53,8 @@ class Student {
       address: json["address"] ?? "",
       enrollmentStatus: json["enrollment_status"] ?? "",
       departmentName: json["department_id"]?["dept_name"] ?? "",
-      coursesCount: json["courses"] != null ? json["courses"].length : 0,
-      courses: json["courses"] != null
-          ? List<String>.from(json["courses"])
-          : [], // ← parse course IDs
+      coursesCount: courseIds.length,
+      courses: courseIds,
     );
   }
 }

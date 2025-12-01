@@ -5,38 +5,58 @@ import 'package:student_systemv1/API/course_api.dart';
 class CourseController extends GetxController {
   var allCourses = <Map<String, dynamic>>[].obs;
   var selectedCourses = <Map<String, dynamic>>[].obs;
+  var unenrolledCourses = <Map<String, dynamic>>[].obs;
 
   String studentId = AuthService.currentStudent?.id ?? "";
+  List<String> studentCourseIds = [];
 
-  // Load all courses from API
+  /// Fetch all courses from API and separate enrolled vs unenrolled
   Future<void> fetchCourses() async {
     try {
+      // Current student info
       studentId = AuthService.currentStudent?.id ?? "";
+      studentCourseIds = AuthService.currentStudent?.courses ?? [];
 
-      final data = await CourseAPI.getAllCourses();
+      // Fetch all courses from API
+      final data =
+          await CourseAPI.getAllCourses(); // <--- make sure this returns ALL courses
       allCourses.assignAll(data);
 
-      // Mark courses already enrolled
+      // Courses student already enrolled in
       selectedCourses.assignAll(
         allCourses
-            .where(
-              (course) =>
-                  AuthService.currentStudent?.courses.contains(course["_id"]) ??
-                  false,
-            )
+            .where((course) => studentCourseIds.contains(course["_id"]))
             .toList(),
+      );
+
+      // Courses student has NOT enrolled in yet
+      unenrolledCourses.assignAll(
+        allCourses
+            .where((course) => !studentCourseIds.contains(course["_id"]))
+            .toList(),
+      );
+
+      print(
+        "All courses from API: ${allCourses.map((c) => c["name"]).toList()}",
+      );
+      print("Student enrolled courses: $studentCourseIds");
+      print(
+        "Selected courses: ${selectedCourses.map((c) => c["name"]).toList()}",
+      );
+      print(
+        "Unenrolled courses: ${unenrolledCourses.map((c) => c["name"]).toList()}",
       );
     } catch (e) {
       print("Error fetching courses: $e");
     }
   }
 
-  // Check if course already added
+  /// Check if a course is already added
   bool isAdded(String id) {
     return selectedCourses.any((c) => c["_id"] == id);
   }
 
-  // Add course locally + send to API
+  /// Enroll student in a course
   Future<void> addCourse(Map<String, dynamic> course) async {
     if (isAdded(course["_id"])) return;
 
@@ -46,9 +66,18 @@ class CourseController extends GetxController {
     );
 
     if (success) {
+      // Add to selected courses
       selectedCourses.add(course);
+      // Remove from unenrolled list
+      unenrolledCourses.removeWhere((c) => c["_id"] == course["_id"]);
+
+      // Update current student course list
+      studentCourseIds.add(course["_id"]);
+      AuthService.currentStudent?.courses.add(course["_id"]);
+
+      print("Added course: ${course["name"]} for student: $studentId");
+    } else {
+      print("Failed to enroll in course: ${course["name"]}");
     }
-    print("studentId = $studentId");
-    print("courseId = ${course["_id"]}");
   }
 }
