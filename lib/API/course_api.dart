@@ -15,21 +15,35 @@ class CourseAPI {
   static Future<List<Map<String, dynamic>>> getAllCourses() async {
     try {
       final response = await dio.get(
-        "/courses", // changed from /students/courses
+        "/courses",
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
 
       if (response.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(response.data);
+        // Handle various backend structures safely
+        if (response.data is List) {
+          return List<Map<String, dynamic>>.from(response.data);
+        }
+
+        if (response.data["courses"] != null) {
+          return List<Map<String, dynamic>>.from(response.data["courses"]);
+        }
+
+        if (response.data["data"] != null) {
+          return List<Map<String, dynamic>>.from(response.data["data"]);
+        }
       }
 
       return [];
     } catch (e) {
-      throw Exception("Failed to load courses: $e");
+      print("Failed to load courses: $e");
+      return [];
     }
   }
 
   // POST enroll in a course
+  static Map<String, dynamic>? lastEnrolledStudent; // store last student object
+
   static Future<bool> enrollCourse({
     required String studentId,
     required String courseId,
@@ -41,12 +55,13 @@ class CourseAPI {
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
 
-      if (response.statusCode == 200 &&
-          response.data["message"] == "Course enrolled successfully") {
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        lastEnrolledStudent = response.data["data"];
         return true;
+      } else {
+        print("Enroll failed: ${response.data["message"]}");
+        return false;
       }
-
-      return false;
     } catch (e) {
       print("Enroll error: $e");
       return false;

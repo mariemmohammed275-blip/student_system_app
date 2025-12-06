@@ -39,42 +39,60 @@ class AuthService {
   }
 
   // ---------------------
-  // Login
+  // LOGIN
   // ---------------------
   Future<Student?> login({
     required String email,
     required String password,
   }) async {
     try {
-      // Use loginRaw to get full response including token
+      // Step 1: login
       final response = await ApiService.loginRaw(
         email: email,
         password: password,
       );
 
-      if (response == null) return null;
+      if (response == null) {
+        print("Login failed");
+        return null;
+      }
 
-      // Extract student info
-      final student = Student.fromJson(response["student"]);
+      final String token = response["token"];
+      ApiService.token = token; // ← important
+      // After fetching token
+      CourseAPI.token = token; // <-- Add this line
+
+      ApiService.setToken(token); // set to Dio headers
+
+      print("Token saved successfully.");
+
+      // Step 2: fetch student data from /me
+      final meResponse = await ApiService.getMe();
+
+      if (meResponse == null) {
+        print("Failed to load student profile.");
+        return null;
+      }
+
+      final student = Student.fromJson(meResponse);
       currentStudent = student;
 
-      // Extract token and store it in CourseAPI
-      CourseAPI.token = response["token"];
-      print("Login successful. Token set for CourseAPI.");
+      print("Student loaded successfully: ${student.fullName}");
 
       return student;
     } catch (e) {
-      print('Login error: $e');
+      print("Login error: $e");
       return null;
     }
   }
 
   // ---------------------
-  // Logout
+  // LOGOUT
   // ---------------------
   void logout() {
     currentStudent = null;
-    CourseAPI.token = ""; // Clear token on logout
-    print("User logged out and token cleared.");
+    ApiService.token = null;
+    ApiService.clearToken();
+    print("Logged out successfully.");
   }
 }

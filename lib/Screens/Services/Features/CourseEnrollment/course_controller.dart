@@ -8,7 +8,7 @@ class CourseController extends GetxController {
   var unenrolledCourses = <Map<String, dynamic>>[].obs;
 
   String studentId = AuthService.currentStudent?.id ?? "";
-  List<String> studentCourseIds = [];
+  List<String> studentCourseIds = AuthService.currentStudent?.courses ?? [];
 
   /// Fetch all courses from API and separate enrolled vs unenrolled
   Future<void> fetchCourses() async {
@@ -66,16 +66,20 @@ class CourseController extends GetxController {
     );
 
     if (success) {
-      // Add to selected courses
+      // Update currentStudent using copyWith
+      final updatedCourses = List<String>.from(
+        AuthService.currentStudent!.courses,
+      )..add(course["_id"]);
+      AuthService.currentStudent = AuthService.currentStudent!.copyWith(
+        courses: updatedCourses,
+      );
+
+      // Update local lists
       selectedCourses.add(course);
-      // Remove from unenrolled list
       unenrolledCourses.removeWhere((c) => c["_id"] == course["_id"]);
-
-      // Update current student course list
       studentCourseIds.add(course["_id"]);
-      AuthService.currentStudent?.courses.add(course["_id"]);
 
-      print("Added course: ${course["name"]} for student: $studentId");
+      print("Enrolled in course: ${course["name"]}");
     } else {
       print("Failed to enroll in course: ${course["name"]}");
     }

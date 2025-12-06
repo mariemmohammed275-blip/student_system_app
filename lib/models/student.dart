@@ -10,7 +10,8 @@ class Student {
   final String enrollmentStatus;
   final String departmentName;
   final int coursesCount;
-  final List<String> courses; // List of enrolled course IDs
+  final List<String> courses;
+  final int year;
 
   Student({
     required this.id,
@@ -25,19 +26,16 @@ class Student {
     required this.departmentName,
     required this.coursesCount,
     required this.courses,
+    required this.year,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) {
-    // Safely parse courses
     List<String> courseIds = [];
     if (json["courses"] != null) {
       courseIds = List<String>.from(
         json["courses"].map((c) {
-          if (c is Map && c.containsKey("_id")) {
-            return c["_id"].toString();
-          } else {
-            return c.toString();
-          }
+          if (c is Map && c.containsKey("_id")) return c["_id"].toString();
+          return c.toString();
         }),
       );
     }
@@ -55,6 +53,28 @@ class Student {
       departmentName: json["department_id"]?["dept_name"] ?? "",
       coursesCount: courseIds.length,
       courses: courseIds,
+      year: json["year"] ?? 0,
+    );
+  }
+
+  // -----------------------------
+  // copyWith to update courses list
+  // -----------------------------
+  Student copyWith({List<String>? courses}) {
+    return Student(
+      id: id,
+      studentId: studentId,
+      fullName: fullName,
+      email: email,
+      phone: phone,
+      gender: gender,
+      dob: dob,
+      address: address,
+      enrollmentStatus: enrollmentStatus,
+      departmentName: departmentName,
+      coursesCount: courses?.length ?? coursesCount,
+      courses: courses ?? this.courses,
+      year: year,
     );
   }
 }

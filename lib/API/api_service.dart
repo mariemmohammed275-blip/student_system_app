@@ -11,6 +11,18 @@ class ApiService {
     ),
   );
 
+  static String? token;
+
+  static void setToken(String newToken) {
+    token = newToken;
+    _dio.options.headers["Authorization"] = "Bearer $newToken";
+  }
+
+  static void clearToken() {
+    token = null;
+    _dio.options.headers.remove("Authorization");
+  }
+
   // -----------------------------
   // SIGN UP API
   // -----------------------------
@@ -60,6 +72,21 @@ class ApiService {
       return null;
     } on DioError catch (e) {
       print("Login error: ${e.response?.data ?? e.message}");
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> getMe() async {
+    try {
+      final response = await _dio.get("/students/me");
+
+      if (response.statusCode == 200) {
+        return response.data["data"];
+      }
+
+      return null;
+    } catch (e) {
+      print("getMe error: $e");
       return null;
     }
   }

@@ -39,8 +39,8 @@ class ProfileScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    "Year: 4th Year",
+                  Text(
+                    "Year: ${student?.year ?? 'N/A'}",
                     style: TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                 ],
