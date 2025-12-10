@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 class CourseAPI {
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: "http://192.168.1.5:5000/api",
+      baseUrl: "http://192.168.20.1:5000/api",
       connectTimeout: Duration(seconds: 10),
       receiveTimeout: Duration(seconds: 10),
     ),
@@ -15,7 +15,7 @@ class CourseAPI {
   static Future<List<Map<String, dynamic>>> getAllCourses() async {
     try {
       final response = await dio.get(
-        "/courses",
+        "/courses/",
         options: Options(headers: {"Authorization": "Bearer $token"}),
       );
 

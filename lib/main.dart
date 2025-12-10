@@ -10,6 +10,7 @@ import 'Screens/Services/Features/CourseEnrollment/course_controller.dart';
 
 void main() {
   Get.put(CourseController());
+
   runApp(const MyApp());
 }
 

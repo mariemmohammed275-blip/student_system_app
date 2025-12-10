@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'Features/Exams/exams.dart';
+import 'Features/Grades/grades_page.dart';
 import 'Features/SelectedCourses/selected_courses.dart';
 import 'Features/Attendance/attendance.dart';
 import 'Features/CourseEnrollment/course_enrollment.dart';
@@ -19,6 +20,7 @@ class ServicesScreen extends StatelessWidget {
     {'icon': Icons.school, 'title': 'Schedules', 'page': () => Schedules()},
     {'icon': Icons.quiz, 'title': 'Exams & Results', 'page': () => Exams()},
     {'icon': Icons.payment, 'title': 'Payment', 'page': () => Payments()},
+    {'icon': Icons.grade_rounded, 'title': 'Grades', 'page': () => Grades()},
     {
       'icon': Icons.video_call,
       'title': 'Online Meeting',
