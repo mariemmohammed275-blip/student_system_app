@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 class CourseAPI {
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: "http://192.168.20.1:5000/api",
+      baseUrl: "http://192.168.1.7:5000/api",
       connectTimeout: Duration(seconds: 10),
       receiveTimeout: Duration(seconds: 10),
     ),
@@ -65,6 +65,28 @@ class CourseAPI {
     } catch (e) {
       print("Enroll error: $e");
       return false;
+    }
+  }
+
+  // GET slides for a specific course
+  static Future<List<Map<String, dynamic>>> getCourseSlides(
+    String courseId,
+  ) async {
+    try {
+      final response = await dio.post(
+        "/slides/list",
+        data: {"courseId": courseId},
+        options: Options(headers: {"Authorization": "Bearer $token"}),
+      );
+
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        return List<Map<String, dynamic>>.from(response.data["data"]);
+      }
+
+      return [];
+    } catch (e) {
+      print("Failed to load slides: $e");
+      return [];
     }
   }
 }
