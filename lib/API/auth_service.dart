@@ -1,3 +1,4 @@
+import 'package:student_systemv1/API/attendance_api.dart';
 import 'package:student_systemv1/API/course_api.dart';
 import 'package:student_systemv1/models/student.dart';
 import 'api_service.dart';
@@ -61,7 +62,7 @@ class AuthService {
       ApiService.token = token; // ← important
       // After fetching token
       CourseAPI.token = token; // <-- Add this line
-
+      AttendanceAPI.token = token;
       ApiService.setToken(token); // set to Dio headers
 
       print("Token saved successfully.");

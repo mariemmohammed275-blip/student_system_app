@@ -17,7 +17,7 @@ class GradesController extends GetxController {
         options: Options(
           headers: {
             "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzFiY2RlZTVkODdhOGQ3YmNlMzQ1NyIsInJvbGUiOiJzdHVkZW50IiwiZW1haWwiOiJ0dXlpdWhqZ2tobmJodmtneUBnbWFpbC5jb20iLCJpYXQiOjE3NjUzODIzODYsImV4cCI6MTc2NTM4NTk4Nn0.l7_Z0I_Brbnr7B_nxdLul-xXNu7QqJkkK7EvUF0twBA",
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzFiY2RlZTVkODdhOGQ3YmNlMzQ1NyIsInJvbGUiOiJzdHVkZW50IiwiZW1haWwiOiJ0dXlpdWhqZ2tobmJodmtneUBnbWFpbC5jb20iLCJpYXQiOjE3NjU4OTcxMjMsImV4cCI6MTc2NTkwMDcyM30.8k-SbT66OaQ5nEEDHQNo4boKmZ30nkxftwCRROjnwvo",
           },
         ),
       );

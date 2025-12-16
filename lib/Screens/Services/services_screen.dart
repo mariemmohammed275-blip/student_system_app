@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'Features/Attendance/screens/attendance_summary_screen.dart';
 import 'Features/Exams/exams.dart';
 import 'Features/Grades/grades_page.dart';
 import 'Features/SelectedCourses/selected_courses.dart';
-import 'Features/Attendance/attendance.dart';
 import 'Features/CourseEnrollment/course_enrollment.dart';
 import 'Features/OnlineMeeting/online_meeting.dart';
 import 'Features/Payments/payments.dart';
@@ -15,7 +15,7 @@ class ServicesScreen extends StatelessWidget {
     {
       'icon': Icons.qr_code,
       'title': 'Attendance Details',
-      'page': () => Attendance(),
+      'page': () => AttendanceSummaryScreen(),
     },
     {'icon': Icons.school, 'title': 'Schedules', 'page': () => Schedules()},
     {'icon': Icons.quiz, 'title': 'Exams & Results', 'page': () => Exams()},
