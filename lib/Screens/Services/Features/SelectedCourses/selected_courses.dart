@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:student_systemv1/Screens/course_slides_page.dart';
 import '../CourseEnrollment/course_controller.dart';
 
 class SelectedCourses extends StatelessWidget {
@@ -24,6 +25,15 @@ class SelectedCourses extends StatelessWidget {
               child: ListTile(
                 title: Text(course["name"]),
                 subtitle: Text(course["code"]),
+                trailing: Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Get.to(
+                    () => CourseSlidesPage(
+                      courseId: course["_id"],
+                      courseName: course["name"],
+                    ),
+                  );
+                },
               ),
             );
           },
