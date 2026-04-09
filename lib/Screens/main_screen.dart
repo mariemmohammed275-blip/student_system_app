@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
 import 'Home/home_screen.dart';
 import 'Services/services_screen.dart';
 import 'Community/community_screen.dart';
@@ -25,6 +26,34 @@ class MainScreen extends StatelessWidget {
 
   final NavController navController = Get.put(NavController());
 
+  Widget navItem(IconData icon, String label, int index) {
+    final isSelected = navController.selectedIndex.value == index;
+
+    return Padding(
+      padding: const EdgeInsets.all(1.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 26,
+            color: isSelected ? Colors.white : Colors.black54,
+          ),
+
+          const SizedBox(height: 4),
+
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: isSelected ? Colors.white : Colors.black54,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -37,19 +66,17 @@ class MainScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           color: Colors.white,
           buttonBackgroundColor: const Color(0xFF2A73FF),
-          height: 60,
+          height: 70,
           animationDuration: const Duration(milliseconds: 300),
-          items: const [
-            Icon(Icons.home_outlined, size: 30, color: Colors.black),
-            Icon(
-              Icons.miscellaneous_services_outlined,
-              size: 30,
-              color: Colors.black,
-            ),
-            Icon(Icons.people_outline, size: 30, color: Colors.black),
-            Icon(Icons.person_outline, size: 30, color: Colors.black),
-            Icon(Icons.settings_outlined, size: 30, color: Colors.black),
+
+          items: [
+            navItem(Icons.home_outlined, "Home", 0),
+            navItem(Icons.miscellaneous_services_outlined, "Services", 1),
+            navItem(Icons.people_outline, "Community", 2),
+            navItem(Icons.person_outline, "Profile", 3),
+            navItem(Icons.settings_outlined, "Settings", 4),
           ],
+
           onTap: (index) {
             navController.selectedIndex.value = index;
           },

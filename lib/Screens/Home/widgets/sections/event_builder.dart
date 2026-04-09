@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_systemv1/models/event.dart';
 
-import 'package:student_systemv1/widgets/event_card.dart';
+import 'package:student_systemv1/Screens/Home/widgets/event_card.dart';
 
 class EventBuilder extends StatelessWidget {
   EventBuilder({super.key});
