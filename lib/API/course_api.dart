@@ -89,4 +89,26 @@ class CourseAPI {
       return [];
     }
   }
+
+  // GET assignments for a specific course
+  static Future<List<Map<String, dynamic>>> getCourseAssignments(
+    String courseId,
+  ) async {
+    try {
+      final response = await dio.post(
+        "/assignments/list",
+        data: {"courseId": courseId},
+        options: Options(headers: {"Authorization": "Bearer $token"}),
+      );
+
+      if (response.statusCode == 200 && response.data["success"] == true) {
+        return List<Map<String, dynamic>>.from(response.data["data"]);
+      }
+
+      return [];
+    } catch (e) {
+      print("Failed to load assignments: $e");
+      return [];
+    }
+  }
 }
