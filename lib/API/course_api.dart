@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 class CourseAPI {
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: "http://192.168.1.7:5000/api",
+      baseUrl: "http://192.168.1.25:5000/api",
       connectTimeout: Duration(seconds: 10),
       receiveTimeout: Duration(seconds: 10),
     ),

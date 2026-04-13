@@ -6,14 +6,14 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final student = AuthService.currentStudent; // get logged-in student
+    final student = AuthService.currentStudent;
     final name = student?.fullName ?? "Student";
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             radius: 24,
             backgroundImage: NetworkImage(
               'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg',
@@ -25,27 +25,29 @@ class Header extends StatelessWidget {
             children: [
               Text(
                 'Hi, $name',
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  // Let the theme handle the text color automatically!
                 ),
               ),
-              Text(
+              const Text(
                 'Good Morning',
                 style: TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 14,
-                  color: Colors.grey,
+                  color: Colors.grey, // Grey is usually fine in both modes
                 ),
               ),
             ],
           ),
-          Spacer(),
+          const Spacer(),
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.notifications,
-              color: Colors.black, // Set the color of the bell icon
+              // REMOVED Colors.black here. Now it will be black in light mode, white in dark mode.
+              color: Theme.of(context).iconTheme.color,
               size: 24,
             ),
             onPressed: () {},

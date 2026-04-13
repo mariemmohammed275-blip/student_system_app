@@ -8,13 +8,20 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final student = AuthService.currentStudent;
 
+    // Check if the app is currently in Dark Mode
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      //backgroundColor: Colors.grey[100],
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        title: const Text("Profile", style: TextStyle(color: Colors.black)),
-        iconTheme: const IconThemeData(color: Colors.black),
+        // Let the theme handle the AppBar background automatically
+        backgroundColor: Colors.transparent,
+        title: Text(
+          "Profile",
+          // Let the theme handle the text color automatically
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        // Icon color adapts to the theme automatically now
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -24,24 +31,27 @@ class ProfileScreen extends StatelessWidget {
             Center(
               child: Column(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 60,
                     backgroundImage: AssetImage("assets/images/student.png"),
                   ),
                   const SizedBox(height: 12),
                   Text(
                     student?.fullName ?? "Student Name",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     "Student ID: ${student?.studentId ?? 'N/A'}",
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                    style: const TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     "Year: ${student?.year ?? 'N/A'}",
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                    style: const TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                 ],
               ),
@@ -58,19 +68,21 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                // Dynamically change card background
+                color: isDark ? Colors.grey[800] : Colors.white,
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black12,
+                    // Make shadows slightly darker in dark mode so they are visible
+                    color: isDark ? Colors.black38 : Colors.black12,
                     blurRadius: 6,
-                    offset: Offset(0, 3),
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
+                children: [
                   _GpaItem(label: "Current GPA", value: "3.67"),
                   _GpaItem(label: "Completed Hours", value: "92"),
                   _GpaItem(label: "Remaining", value: "38"),
@@ -90,13 +102,14 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                // Dynamically change card background
+                color: isDark ? Colors.grey[800] : Colors.white,
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black12,
+                    color: isDark ? Colors.black38 : Colors.black12,
                     blurRadius: 6,
-                    offset: Offset(0, 3),
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
@@ -111,31 +124,13 @@ class ProfileScreen extends StatelessWidget {
                     value: student?.departmentName ?? "N/A",
                   ),
                   const Divider(),
-                  _InfoRow(title: "City", value: "Cairo"),
+                  const _InfoRow(title: "City", value: "Cairo"),
                 ],
               ),
             ),
 
             const SizedBox(height: 12),
 
-            // SizedBox(
-            //   width: double.infinity,
-            //   child: ElevatedButton(
-            //     onPressed: () {},
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Color(0xFFA8845F),
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(14),
-            //       ),
-            //       padding: const EdgeInsets.symmetric(vertical: 14),
-            //     ),
-            //     child: const Text(
-            //       "Edit Personal Info",
-            //       style: TextStyle(color: Colors.white),
-            //     ),
-            //   ),
-            // ),
-            //const SizedBox(height: 30),
             const Text(
               "Academic Advisor",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -146,26 +141,27 @@ class ProfileScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                // Dynamically change card background
+                color: isDark ? Colors.grey[800] : Colors.white,
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black12,
+                    color: isDark ? Colors.black38 : Colors.black12,
                     blurRadius: 6,
-                    offset: Offset(0, 3),
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
-              child: Row(
+              child: const Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 30,
                     backgroundImage: AssetImage("assets/images/advisor.png"),
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         "Dr. Keshk",
                         style: TextStyle(

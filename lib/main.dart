@@ -23,6 +23,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Student System',
       initialRoute: '/login',
+      theme: ThemeData.light(), // Default light theme
+      darkTheme: ThemeData.dark(), // Default dark theme
+      themeMode: ThemeMode.light,
       getPages: [
         GetPage(name: '/login', page: () => const LoginForm()),
         GetPage(name: '/signup', page: () => const SignUpForm()),

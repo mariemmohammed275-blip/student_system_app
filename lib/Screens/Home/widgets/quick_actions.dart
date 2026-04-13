@@ -3,15 +3,21 @@ import 'package:flutter/material.dart';
 class QuickActions extends StatelessWidget {
   const QuickActions({super.key});
 
-  final Color cardColor = const Color(0xffE9EEF5);
+  Widget actionItem({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+  }) {
+    // Check if Dark Mode is active
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-  Widget actionItem({required IconData icon, required String title}) {
     return Expanded(
       child: Container(
         height: 90,
         margin: const EdgeInsets.symmetric(horizontal: 6),
         decoration: BoxDecoration(
-          color: cardColor,
+          // Dynamically change the background color
+          color: isDark ? Colors.grey[800] : const Color(0xffE9EEF5),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -20,13 +26,17 @@ class QuickActions extends StatelessWidget {
             // 🔵 icon circle
             Container(
               padding: const EdgeInsets.all(10),
-              decoration: const BoxDecoration(
-                color: Color(0xffDDE5F3),
+              decoration: BoxDecoration(
+                // Dynamically change the circle color
+                color: isDark ? Colors.grey[700] : const Color(0xffDDE5F3),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon,
-                color: Color.fromARGB(255, 28, 55, 212),
+                // Keep the blue icon, or change it if you prefer in dark mode
+                color: isDark
+                    ? Colors.blueAccent
+                    : const Color.fromARGB(255, 28, 55, 212),
                 size: 22,
               ),
             ),
@@ -38,7 +48,7 @@ class QuickActions extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Robot',
+                fontFamily: 'Roboto',
               ),
             ),
           ],
@@ -59,7 +69,7 @@ class QuickActions extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 22,
-              fontFamily: 'Robot',
+              fontFamily: 'Roboto',
             ),
           ),
 
@@ -67,9 +77,18 @@ class QuickActions extends StatelessWidget {
 
           Row(
             children: [
-              actionItem(icon: Icons.school, title: "Grades"),
-              actionItem(icon: Icons.qr_code, title: "QR Attendance"),
-              actionItem(icon: Icons.account_balance_wallet, title: "Payments"),
+              // Pass context so the items know the current theme
+              actionItem(context: context, icon: Icons.school, title: "Grades"),
+              actionItem(
+                context: context,
+                icon: Icons.qr_code,
+                title: "QR Attendance",
+              ),
+              actionItem(
+                context: context,
+                icon: Icons.account_balance_wallet,
+                title: "Payments",
+              ),
             ],
           ),
         ],

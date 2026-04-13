@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 class AttendanceAPI {
   static final Dio dio = Dio(
     BaseOptions(
-      baseUrl: "http://192.168.20.1:5000/api/attendance/me",
+      baseUrl: "http://192.168.1.25:5000/api/attendance/me",
       connectTimeout: Duration(seconds: 10),
       receiveTimeout: Duration(seconds: 10),
     ),

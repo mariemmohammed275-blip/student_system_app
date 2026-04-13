@@ -17,7 +17,7 @@ class NavController extends GetxController {
     () => ServicesScreen(),
     () => const CommunityScreen(),
     () => const ProfileScreen(),
-    () => const SettingsScreen(),
+    () => SettingsScreen(),
   ];
 }
 
@@ -26,8 +26,10 @@ class MainScreen extends StatelessWidget {
 
   final NavController navController = Get.put(NavController());
 
-  Widget navItem(IconData icon, String label, int index) {
+  // 1. Pass BuildContext into the navItem so it can check the theme
+  Widget navItem(BuildContext context, IconData icon, String label, int index) {
     final isSelected = navController.selectedIndex.value == index;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
       padding: const EdgeInsets.all(1.0),
@@ -37,7 +39,11 @@ class MainScreen extends StatelessWidget {
           Icon(
             icon,
             size: 26,
-            color: isSelected ? Colors.white : Colors.black54,
+            // 2. White if selected (since it's on the blue button).
+            // If unselected, switch between black54 (Light) and light grey (Dark)
+            color: isSelected
+                ? Colors.white
+                : (isDark ? Colors.grey[400] : Colors.black54),
           ),
 
           const SizedBox(height: 4),
@@ -46,7 +52,10 @@ class MainScreen extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 10,
-              color: isSelected ? Colors.white : Colors.black54,
+              // 3. Apply the same logic to the text
+              color: isSelected
+                  ? Colors.white
+                  : (isDark ? Colors.grey[400] : Colors.black54),
             ),
           ),
         ],
@@ -56,6 +65,9 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 4. Check if we are in Dark Mode
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Obx(
       () => Scaffold(
         extendBody: true,
@@ -64,17 +76,27 @@ class MainScreen extends StatelessWidget {
         bottomNavigationBar: CurvedNavigationBar(
           index: navController.selectedIndex.value,
           backgroundColor: Colors.transparent,
-          color: Colors.white,
+
+          // 5. Change the main Navigation Bar color dynamically!
+          color: isDark ? Colors.grey[900]! : Colors.white,
+
+          // The selected "floating" button stays blue because it looks great in both themes
           buttonBackgroundColor: const Color(0xFF2A73FF),
           height: 70,
           animationDuration: const Duration(milliseconds: 300),
 
           items: [
-            navItem(Icons.home_outlined, "Home", 0),
-            navItem(Icons.miscellaneous_services_outlined, "Services", 1),
-            navItem(Icons.people_outline, "Community", 2),
-            navItem(Icons.person_outline, "Profile", 3),
-            navItem(Icons.settings_outlined, "Settings", 4),
+            // Pass the context to all nav items
+            navItem(context, Icons.home_outlined, "Home", 0),
+            navItem(
+              context,
+              Icons.miscellaneous_services_outlined,
+              "Services",
+              1,
+            ),
+            navItem(context, Icons.people_outline, "Community", 2),
+            navItem(context, Icons.person_outline, "Profile", 3),
+            navItem(context, Icons.settings_outlined, "Settings", 4),
           ],
 
           onTap: (index) {
