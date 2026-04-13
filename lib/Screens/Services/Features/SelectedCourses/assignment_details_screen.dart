@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:student_systemv1/Controllers/assignment_details_controller.dart';
 import 'package:student_systemv1/models/assignment.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -151,54 +152,128 @@ class AssignmentDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 15),
 
-            // Upload Box
-            GestureDetector(
-              onTap: () {
-                // TODO: Trigger file picker here!
-                Get.snackbar(
-                  "Coming Soon",
-                  "We will connect the file picker here next!",
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: isDark ? Colors.grey[800] : Colors.white,
-                  colorText: isDark ? Colors.white : Colors.black,
-                );
-              },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 40),
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[800] : Colors.blue[50],
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark ? Colors.grey[700]! : Colors.blue[200]!,
-                    width: 2,
-                    style: BorderStyle.solid,
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.cloud_upload_outlined,
-                      size: 50,
-                      color: isDark ? Colors.blueAccent : Colors.blue,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Tap to upload your answer",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.blueAccent : Colors.blue,
+            // Inject the controller directly into the build method
+            GetBuilder<AssignmentDetailsController>(
+              init: AssignmentDetailsController(),
+              builder: (controller) {
+                return Obx(() {
+                  // STATE 1: UPLOAD SUCCESS (Green Checkmark)
+                  if (controller.isUploaded.value) {
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 30),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? Colors.green[900]?.withOpacity(0.2)
+                            : Colors.green[50],
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.green, width: 2),
+                      ),
+                      child: Column(
+                        children: [
+                          const Icon(
+                            Icons.check_circle,
+                            size: 50,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            "Uploaded Successfully",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            controller
+                                .selectedFileName
+                                .value, // Shows the loaded file name!
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: isDark
+                                  ? Colors.grey[300]
+                                  : Colors.grey[700],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  // STATE 2: UPLOADING (Spinner)
+                  if (controller.isUploading.value) {
+                    return Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.grey[800] : Colors.blue[50],
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isDark ? Colors.grey[700]! : Colors.blue[200]!,
+                          width: 2,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          const CircularProgressIndicator(),
+                          const SizedBox(height: 15),
+                          Text(
+                            "Uploading ${controller.selectedFileName.value}...",
+                            style: TextStyle(
+                              color: isDark ? Colors.blueAccent : Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  // STATE 3: DEFAULT UPLOAD BOX
+                  return GestureDetector(
+                    onTap: () => controller.pickAndUploadFile(assignment.id),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.grey[800] : Colors.blue[50],
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isDark ? Colors.grey[700]! : Colors.blue[200]!,
+                          width: 2,
+                          style: BorderStyle.solid,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.cloud_upload_outlined,
+                            size: 50,
+                            color: isDark ? Colors.blueAccent : Colors.blue,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Tap to upload your answer",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? Colors.blueAccent : Colors.blue,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          const Text(
+                            "Supports PDF, DOCX, ZIP",
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      "Supports PDF, DOCX, ZIP",
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
+                  );
+                });
+              },
             ),
           ],
         ),

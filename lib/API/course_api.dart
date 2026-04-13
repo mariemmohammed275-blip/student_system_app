@@ -111,4 +111,35 @@ class CourseAPI {
       return [];
     }
   }
+
+  // POST: Upload student assignment
+  static Future<bool> submitAssignment({
+    required String assignmentId,
+    required String filePath,
+    required String fileName,
+  }) async {
+    try {
+      // 1. Package the data exactly how your backend expects it
+      FormData formData = FormData.fromMap({
+        "assignmentId": assignmentId,
+        "file": await MultipartFile.fromFile(filePath, filename: fileName),
+      });
+
+      // 2. Send the request (Passing the ID in the query param AND body as requested)
+      final response = await dio.post(
+        "/assignments/submit?assignmentId=$assignmentId",
+        data: formData,
+        options: Options(headers: {"Authorization": "Bearer $token"}),
+      );
+
+      // 3. Return true if successful
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print("Upload failed: $e");
+      return false;
+    }
+  }
 }
