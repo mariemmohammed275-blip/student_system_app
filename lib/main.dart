@@ -5,6 +5,8 @@ import 'package:student_systemv1/Authentication/forgetPassword_form.dart';
 import 'package:student_systemv1/Authentication/login_form.dart';
 import 'package:student_systemv1/Authentication/signUp_form.dart';
 import 'package:student_systemv1/Screens/main_screen.dart';
+import 'package:student_systemv1/Screens/Services/Features/Attendance/screens/attendance_course_history_screen.dart';
+import 'package:student_systemv1/Screens/Services/Features/Attendance/screens/attendance_range_screen.dart';
 
 import 'Screens/Services/Features/CourseEnrollment/course_controller.dart';
 
@@ -31,6 +33,14 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/signup', page: () => const SignUpForm()),
         GetPage(name: '/home', page: () => MainScreen()),
         GetPage(name: '/forgot', page: () => const ForgotPasswordForm()),
+        GetPage(
+          name: '/attendance-course-history',
+          page: () => const AttendanceCourseHistoryScreen(),
+        ),
+        GetPage(
+          name: '/attendance-range',
+          page: () => const AttendanceRangeScreen(),
+        ),
       ],
     );
   }
