@@ -13,7 +13,7 @@ class QuickActions extends StatelessWidget {
 
     return Expanded(
       child: Container(
-        height: 90,
+        height: 100,
         margin: const EdgeInsets.symmetric(horizontal: 6),
         decoration: BoxDecoration(
           // Dynamically change the background color
@@ -25,10 +25,10 @@ class QuickActions extends StatelessWidget {
           children: [
             // 🔵 icon circle
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
                 // Dynamically change the circle color
-                color: isDark ? Colors.grey[700] : const Color(0xffDDE5F3),
+                color: isDark ? Colors.grey[800] : const Color(0xffE9EEF5),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -37,7 +37,7 @@ class QuickActions extends StatelessWidget {
                 color: isDark
                     ? Colors.blueAccent
                     : const Color.fromARGB(255, 28, 55, 212),
-                size: 22,
+                size: 30,
               ),
             ),
 
@@ -46,8 +46,8 @@ class QuickActions extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                //fontWeight: FontWeight.bold,
                 fontFamily: 'Roboto',
               ),
             ),
@@ -82,7 +82,7 @@ class QuickActions extends StatelessWidget {
               actionItem(
                 context: context,
                 icon: Icons.qr_code,
-                title: "QR Attendance",
+                title: "\t       QR \n Attendance",
               ),
               actionItem(
                 context: context,

@@ -65,7 +65,7 @@ class ServicesScreen extends StatelessWidget {
 
     return Scaffold(
       // 2. Adjust Scaffold Background dynamically
-      backgroundColor: isDark ? Colors.grey[900] : const Color(0xffF5F7FB),
+      backgroundColor: isDark ? Colors.grey[900] : Colors.white,
 
       appBar: AppBar(
         elevation: 0,

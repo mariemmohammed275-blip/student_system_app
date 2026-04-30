@@ -54,8 +54,8 @@ class Schedule extends StatelessWidget {
 
           // الخط الملون
           Container(
-            width: 3,
-            height: 50,
+            width: 2,
+            height: 62,
             decoration: BoxDecoration(
               color:
                   color, // The accent color (purple, blue, etc.) stays the same!
@@ -122,21 +122,17 @@ class Schedule extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14),
       decoration: BoxDecoration(
-        // Darken the background header
-        color: isDark ? Colors.grey[850] : const Color(0xffDCE3ED),
+        color: isDark ? Colors.grey[850] : const Color(0xffEEF2F7),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         children: [
           const Text(
             "October 18th, 2025",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              fontFamily: 'Robot',
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
-          const SizedBox(height: 10),
+
+          const SizedBox(height: 14),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -145,7 +141,7 @@ class Schedule extends StatelessWidget {
               dayItem(context, "19", "Tue", badge: "1"),
               dayItem(context, "20", "Wed"),
               dayItem(context, "21", "Thu", badge: "3"),
-              dayItem(context, "22", "Sun"), // Capitalized 'sun' to 'Sun'
+              dayItem(context, "22", "Sun"),
             ],
           ),
         ],
@@ -163,52 +159,69 @@ class Schedule extends StatelessWidget {
   }) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Column(
-      children: [
-        Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: selected ? const Color(0xff7FA9E6) : Colors.transparent,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                day,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  fontFamily: 'Robot',
-                  // If selected, text is white. If not selected, it adapts to the theme.
-                  color: selected
-                      ? Colors.white
-                      : (isDark ? Colors.white : Colors.black),
-                ),
-              ),
+    return SizedBox(
+      width: 55,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            decoration: BoxDecoration(
+              color: selected ? const Color(0xff7FA9E6) : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
             ),
-
-            // 🔴 badge
-            if (badge != null)
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Text(
-                    badge,
-                    style: const TextStyle(color: Colors.white, fontSize: 10),
+            child: Column(
+              children: [
+                Text(
+                  day,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 23,
+                    color: selected
+                        ? Colors.white
+                        : (isDark ? Colors.white : Colors.black),
                   ),
                 ),
-              ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Text(week, style: TextStyle(fontSize: 12, color: Colors.grey)),
-      ],
+
+                const SizedBox(height: 2),
+
+                Text(
+                  week,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: selected ? Colors.white70 : Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          //const SizedBox(height: 3),
+
+          // 🔴 badge (fixed size so layout never shifts)
+          SizedBox(
+            height: 16,
+            child: badge != null
+                ? Container(
+                    width: 18,
+                    height: 18,
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      badge,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                : const SizedBox(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -258,7 +271,7 @@ class Schedule extends StatelessWidget {
             time: "11:59 PM",
             title: "EC 203 – Principles Macroeconomics",
             subtitle: "",
-            color: Colors.tealAccent,
+            color: const Color.fromARGB(255, 92, 230, 198),
             isMissing: true,
           ),
 

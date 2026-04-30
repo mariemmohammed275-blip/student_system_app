@@ -12,7 +12,9 @@ class Announcement extends StatelessWidget {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         // Soften the border in dark mode
-        border: Border.all(color: isDark ? Colors.grey[700]! : Colors.black87),
+        border: Border.all(
+          color: isDark ? Colors.grey[700]! : Colors.grey[400]!,
+        ),
         // Switch background color
         color: isDark ? Colors.grey[800] : Colors.white,
         borderRadius: BorderRadius.circular(30),
