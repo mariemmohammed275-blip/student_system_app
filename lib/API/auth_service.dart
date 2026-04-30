@@ -93,6 +93,8 @@ class AuthService {
   void logout() {
     currentStudent = null;
     ApiService.token = null;
+    AttendanceAPI.token = "";
+    CourseAPI.token = "";
     ApiService.clearToken();
     print("Logged out successfully.");
   }
