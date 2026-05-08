@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'Features/Attendance/screens/attendance_summary_screen.dart';
@@ -65,9 +66,10 @@ class ServicesScreen extends StatelessWidget {
 
     return Scaffold(
       // 2. Adjust Scaffold Background dynamically
-      backgroundColor: isDark ? Colors.grey[900] : Colors.white,
-
       appBar: AppBar(
+        systemOverlayStyle: Theme.of(context).brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         elevation: 0,
         // 3. Make AppBar transparent so it matches the Scaffold background
         backgroundColor: Colors.transparent,

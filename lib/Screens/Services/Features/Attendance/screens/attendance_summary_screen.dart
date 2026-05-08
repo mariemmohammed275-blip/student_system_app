@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:student_systemv1/Controllers/attendance_controller.dart';
 import 'package:student_systemv1/Screens/Services/Features/Attendance/screens/attendance_course_history_screen.dart';
@@ -22,8 +23,10 @@ class AttendanceSummaryScreen extends StatelessWidget {
     final cardColor = isDark ? Colors.grey[850] : Colors.white;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: AppBar(
+        systemOverlayStyle: Theme.of(context).brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         title: const Text("Attendance Summary"),
         centerTitle: true,
         elevation: 0,
@@ -109,8 +112,9 @@ class AttendanceSummaryScreen extends StatelessWidget {
                                 .toDouble(),
                             minHeight: 9,
                             color: progressColor,
-                            backgroundColor:
-                                isDark ? Colors.grey[800] : Colors.grey[200],
+                            backgroundColor: isDark
+                                ? Colors.grey[800]
+                                : Colors.grey[200],
                           ),
                         ),
                         const SizedBox(height: 14),

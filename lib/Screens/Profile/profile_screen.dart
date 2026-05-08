@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:student_systemv1/API/auth_service.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -13,6 +14,9 @@ class ProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: Theme.of(context).brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         elevation: 0,
         // Let the theme handle the AppBar background automatically
         backgroundColor: Colors.transparent,

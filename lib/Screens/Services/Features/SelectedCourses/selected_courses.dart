@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:student_systemv1/Screens/Services/Features/SelectedCourses/course_details_screen.dart';
 import '../CourseEnrollment/course_controller.dart';
@@ -29,8 +30,10 @@ class _SelectedCoursesState extends State<SelectedCourses> {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? Colors.grey[900] : Colors.grey[50],
       appBar: AppBar(
+        systemOverlayStyle: Theme.of(context).brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
         title: Text(
           "Selected Courses",
           style: TextStyle(

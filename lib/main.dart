@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'package:student_systemv1/Authentication/forgetPassword_form.dart';
@@ -25,9 +26,23 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Student System',
       initialRoute: '/login',
-      theme: ThemeData.light(), // Default light theme
-      darkTheme: ThemeData.dark(), // Default dark theme
+      theme: ThemeData.light().copyWith(
+        scaffoldBackgroundColor: Colors.white,
+      ), // Standardized light bg
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: Colors.grey[900],
+      ), // Standardized dark bg
       themeMode: ThemeMode.light,
+
+      builder: (context, child) {
+        // This universally forces the status bar text/icons to match the theme!
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: Theme.of(context).brightness == Brightness.dark
+              ? SystemUiOverlayStyle.light
+              : SystemUiOverlayStyle.dark,
+          child: child!,
+        );
+      },
       getPages: [
         GetPage(name: '/login', page: () => const LoginForm()),
         GetPage(name: '/signup', page: () => const SignUpForm()),

@@ -11,7 +11,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Padding(
@@ -20,6 +19,7 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.only(top: 20),
             child: Column(
               children: [
+                SizedBox(height: 15),
                 Header(),
                 SizedBox(height: 30),
                 QuickActions(),
