@@ -7,7 +7,6 @@ import 'Features/Exams/exams.dart';
 import 'Features/Grades/grades_page.dart';
 import 'Features/SelectedCourses/selected_courses.dart';
 import 'Features/CourseEnrollment/course_enrollment.dart';
-import 'Features/OnlineMeeting/online_meeting.dart';
 import 'Features/Payments/payments.dart';
 import 'Features/Schedules/schedules.dart';
 
@@ -37,16 +36,7 @@ class ServicesScreen extends StatelessWidget {
       'title': 'Payment',
       'page': () => Payments(),
     }, // Removed const
-    {
-      'icon': Icons.grade_rounded,
-      'title': 'Grades',
-      'page': () => Grades(),
-    }, // Removed const
-    {
-      'icon': Icons.video_call,
-      'title': 'Online Meeting',
-      'page': () => OnlineMeeting(), // Removed const
-    },
+    {'icon': Icons.grade_rounded, 'title': 'Grades', 'page': () => Grades()},
     {
       'icon': Icons.book,
       'title': 'Courses',

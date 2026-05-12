@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:student_systemv1/config/api_config.dart';
 import '../Controllers/auth_controller.dart';
 
 class DioClient {
   static Dio getDio() {
-    final dio = Dio(BaseOptions(baseUrl: "http://192.168.1.16:5000/api"));
+    final dio = Dio(BaseOptions(baseUrl: ApiConfig.baseUrl));
 
     dio.interceptors.add(
       InterceptorsWrapper(

@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:student_systemv1/Screens/Services/Features/Grades/grade_model.dart';
+import 'package:student_systemv1/config/api_config.dart';
 
 class GradesController extends GetxController {
   var isLoading = true.obs;
   var gradeResponse = Rxn<GradeResponse>();
 
-  final dio = Dio(BaseOptions(baseUrl: "http://192.168.1.8:5000/api"));
+  final dio = Dio(BaseOptions(baseUrl: ApiConfig.baseUrl));
 
   Future<void> fetchGrades() async {
     try {
