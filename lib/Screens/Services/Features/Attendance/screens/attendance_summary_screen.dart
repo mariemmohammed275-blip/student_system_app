@@ -19,7 +19,6 @@ class AttendanceSummaryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? Colors.grey[900] : const Color(0xffF5F7FB);
     final cardColor = isDark ? Colors.grey[850] : Colors.white;
 
     return Scaffold(

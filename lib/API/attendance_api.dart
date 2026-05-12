@@ -54,4 +54,26 @@ class AttendanceAPI {
     final response = await dio.get("/me/warnings", options: headers);
     return response.data["warnings"] ?? [];
   }
+
+  static Future<Map<String, dynamic>> scanLectureQr(String qrToken) async {
+    try {
+      final response = await dio.post(
+        "/lecture-session/scan",
+        data: {"qrToken": qrToken},
+        options: headers,
+      );
+
+      return Map<String, dynamic>.from(response.data);
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      if (data is Map) {
+        return Map<String, dynamic>.from(data);
+      }
+
+      return {
+        "success": false,
+        "message": "Unable to scan attendance right now.",
+      };
+    }
+  }
 }

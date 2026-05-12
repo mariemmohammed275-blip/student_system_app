@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:student_systemv1/Screens/Services/Features/Attendance/screens/attendance_qr_scan_screen.dart';
 
 class QuickActions extends StatelessWidget {
   const QuickActions({super.key});
@@ -7,51 +9,39 @@ class QuickActions extends StatelessWidget {
     required BuildContext context,
     required IconData icon,
     required String title,
+    VoidCallback? onTap,
   }) {
-    // Check if Dark Mode is active
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Expanded(
-      child: Container(
-        height: 100,
-        margin: const EdgeInsets.symmetric(horizontal: 6),
-        decoration: BoxDecoration(
-          // Dynamically change the background color
-          color: isDark ? Colors.grey[800] : const Color(0xffE9EEF5),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 🔵 icon circle
-            Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                // Dynamically change the circle color
-                color: isDark ? Colors.grey[800] : const Color(0xffE9EEF5),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          height: 100,
+          margin: const EdgeInsets.symmetric(horizontal: 6),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.grey[800] : const Color(0xffE9EEF5),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
                 icon,
-                // Keep the blue icon, or change it if you prefer in dark mode
                 color: isDark
                     ? Colors.blueAccent
                     : const Color.fromARGB(255, 28, 55, 212),
                 size: 30,
               ),
-            ),
-
-            const SizedBox(height: 8),
-
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 15,
-                //fontWeight: FontWeight.bold,
-                fontFamily: 'Roboto',
+              const SizedBox(height: 8),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 15, fontFamily: 'Roboto'),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -72,17 +62,15 @@ class QuickActions extends StatelessWidget {
               fontFamily: 'Roboto',
             ),
           ),
-
           const SizedBox(height: 12),
-
           Row(
             children: [
-              // Pass context so the items know the current theme
               actionItem(context: context, icon: Icons.school, title: "Grades"),
               actionItem(
                 context: context,
-                icon: Icons.qr_code,
-                title: "\t       QR \n Attendance",
+                icon: Icons.qr_code_scanner,
+                title: "QR\nAttendance",
+                onTap: () => Get.to(() => const AttendanceQrScanScreen()),
               ),
               actionItem(
                 context: context,
