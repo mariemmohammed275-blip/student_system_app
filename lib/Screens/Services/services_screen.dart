@@ -9,6 +9,7 @@ import 'Features/SelectedCourses/selected_courses.dart';
 import 'Features/CourseEnrollment/course_enrollment.dart';
 import 'Features/Payments/payments.dart';
 import 'Features/Schedules/schedules.dart';
+import 'Features/AI/ai_features_screen.dart';
 
 class ServicesScreen extends StatelessWidget {
   ServicesScreen({
@@ -46,6 +47,11 @@ class ServicesScreen extends StatelessWidget {
       'icon': Icons.add_circle_outline,
       'title': 'Course Enrollment',
       'page': () => CourseEnrollment(), // Removed const
+    },
+    {
+      'icon': Icons.auto_awesome,
+      'title': 'AI Features',
+      'page': () => const AiFeaturesScreen(),
     },
   ];
 
