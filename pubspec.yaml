@@ -43,6 +43,7 @@ dependencies:
   git_storage: ^2.1.0
   url_launcher: ^6.3.2
   file_picker: ^8.0.0
+  intl: ^0.20.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
