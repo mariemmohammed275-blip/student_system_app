@@ -1,39 +1,47 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:student_systemv1/Screens/Services/Features/Grades/grade_model.dart';
-import 'package:student_systemv1/config/api_config.dart';
+import 'package:student_systemv1/API/dio_client.dart';
+import 'package:student_systemv1/models/grade.dart';
 
 class GradesController extends GetxController {
+  // Variables to track the screen state
   var isLoading = true.obs;
   var gradeResponse = Rxn<GradeResponse>();
+  var errorMessage = ''.obs;
 
-  final dio = Dio(BaseOptions(baseUrl: ApiConfig.baseUrl));
+  @override
+  void onInit() {
+    super.onInit();
+    fetchGrades(); // Call the API when the controller starts
+  }
 
   Future<void> fetchGrades() async {
     try {
       isLoading(true);
+      errorMessage('');
 
-      final res = await dio.get(
-        "/students/grades",
-        options: Options(
-          headers: {
-            "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzFiY2RlZTVkODdhOGQ3YmNlMzQ1NyIsInJvbGUiOiJzdHVkZW50IiwiZW1haWwiOiJ0dXlpdWhqZ2tobmJodmtneUBnbWFpbC5jb20iLCJpYXQiOjE3NjU4OTcxMjMsImV4cCI6MTc2NTkwMDcyM30.8k-SbT66OaQ5nEEDHQNo4boKmZ30nkxftwCRROjnwvo",
-          },
-        ),
-      );
+      final dio = DioClient.getDio();
+      final response = await dio.get("/students/grades");
 
-      gradeResponse.value = GradeResponse.fromJson(res.data);
+      if (response.statusCode == 200) {
+        gradeResponse.value = GradeResponse.fromJson(response.data);
+      } else {
+        errorMessage("Unexpected status: ${response.statusCode}");
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        errorMessage("Server Error: ${e.response?.statusCode}");
+      } else {
+        // This will print the EXACT reason it failed to connect
+        print("Error Type: ${e.type}");
+        print("Real Error: ${e.error}");
+        errorMessage("Network Error. Check the console.");
+      }
     } catch (e) {
-      print("Error: $e");
+      errorMessage("An unknown error occurred");
+      print("Unknown Error: $e");
     } finally {
       isLoading(false);
     }
-  }
-
-  @override
-  void onInit() {
-    fetchGrades();
-    super.onInit();
   }
 }

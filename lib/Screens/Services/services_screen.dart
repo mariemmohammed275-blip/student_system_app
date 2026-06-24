@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import 'Features/Attendance/screens/attendance_details_screen.dart';
 import 'Features/Exams/exams.dart';
-import 'Features/Grades/grades_page.dart';
+import 'Features/Grades/grades_screen.dart';
 import 'Features/SelectedCourses/selected_courses.dart';
 import 'Features/CourseEnrollment/course_enrollment.dart';
 import 'Features/Payments/payments.dart';

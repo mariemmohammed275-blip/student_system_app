@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:student_systemv1/Authentication/forgetPassword_form.dart';
 import 'package:student_systemv1/Authentication/login_form.dart';
 import 'package:student_systemv1/Authentication/signUp_form.dart';
+import 'package:student_systemv1/Controllers/auth_controller.dart';
 import 'package:student_systemv1/Screens/main_screen.dart';
 import 'package:student_systemv1/Screens/Services/Features/Attendance/screens/attendance_course_history_screen.dart';
 import 'package:student_systemv1/Screens/Services/Features/Attendance/screens/attendance_range_screen.dart';
@@ -12,6 +13,7 @@ import 'package:student_systemv1/Screens/Services/Features/Attendance/screens/at
 import 'Screens/Services/Features/CourseEnrollment/course_controller.dart';
 
 void main() {
+  Get.put(AuthController());
   Get.put(CourseController());
 
   runApp(const MyApp());

@@ -45,17 +45,20 @@ class Course {
   }
 }
 
-// هنا عملنا تعديل
 class GradeItem {
   final int grade;
-  final String professorId; // ← بدل Professor object
+  final String professorId;
+  final DateTime? createdAt;
 
-  GradeItem({required this.grade, required this.professorId});
+  GradeItem({required this.grade, required this.professorId, this.createdAt});
 
   factory GradeItem.fromJson(Map<String, dynamic> json) {
     return GradeItem(
       grade: json['grade'] ?? 0,
-      professorId: json['professor'], // هو String في الـ API
+      professorId: json['professor'] ?? "",
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : null,
     );
   }
 }

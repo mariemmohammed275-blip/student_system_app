@@ -13,6 +13,8 @@ class DioClient {
           final auth = Get.find<AuthController>();
           final token = auth.token.value;
 
+          print("=== SENDING TOKEN: $token ===");
+
           if (token.isNotEmpty) {
             options.headers["Authorization"] = "Bearer $token";
           }
