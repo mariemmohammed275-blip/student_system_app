@@ -5,11 +5,15 @@ import 'package:get/get.dart';
 
 import 'teaching_assesstent_api.dart';
 
-const Color _primaryBlue = Color(0xFF2A73FF);
-const Color _deepBlue = Color.fromARGB(255, 28, 55, 212);
+// ─── Project Color Palette ────────────────────────────────────────────────────
+const Color _primaryBlue = Color(0xFF1D4ED8); // Primary
+const Color _secondaryGreen = Color(0xFF10B981); // Secondary
+const Color _accentOrange = Color(0xFFF59E0B); // Accent
+const Color _neutralDark = Color(0xFF0D1B4B); // Neutral
+const Color _deepBlue = Color(0xFF1D4ED8);
 const Color _lightBackground = Color(0xffF5F7FB);
-const Color _softBlue = Color(0xffE9EEF5);
-const Color _borderColor = Color(0xffDDE5F0);
+const Color _softBlue = Color(0xffEEF2FF);
+const Color _borderColor = Color(0xffC7D2FE);
 
 class TeachingAssesstentScreen extends StatefulWidget {
   const TeachingAssesstentScreen({super.key});
@@ -105,7 +109,7 @@ class _TeachingAssesstentScreenState extends State<TeachingAssesstentScreen> {
       setState(() {
         _cleanTextFilePath = processed.textFile;
         _uploadStatus =
-            'File processed successfully.\n\nThread ID: ${processed.threadId}\nUploaded File: ${processed.uploadedFile}\nExtracted to: ${processed.textFile}\n\nYou can now use any feature below.';
+            'File processed successfully.\n\nYou can now use any AI features.';
       });
     } catch (error) {
       _showMessage('Upload failed: $error');
@@ -456,9 +460,27 @@ class _TeachingAssesstentScreenState extends State<TeachingAssesstentScreen> {
       child: Theme(
         data: Theme.of(context).copyWith(
           colorScheme: Theme.of(context).colorScheme.copyWith(
-                primary: primaryColor,
-                secondary: primaryColor,
-              ),
+            primary: primaryColor,
+            secondary: _secondaryGreen,
+            tertiary: _accentOrange,
+          ),
+          chipTheme: ChipThemeData(
+            selectedColor: primaryColor,
+            labelStyle: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            secondaryLabelStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            side: BorderSide(color: _borderColor),
+          ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
             fillColor: isDark ? Colors.grey[850] : Colors.white,
@@ -488,22 +510,31 @@ class _TeachingAssesstentScreenState extends State<TeachingAssesstentScreen> {
               elevation: 0,
               backgroundColor: primaryColor,
               foregroundColor: Colors.white,
-              minimumSize: const Size.fromHeight(48),
+              minimumSize: const Size.fromHeight(50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
-              textStyle: const TextStyle(fontWeight: FontWeight.w700),
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+              ),
             ),
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: OutlinedButton.styleFrom(
               foregroundColor: primaryColor,
-              minimumSize: const Size.fromHeight(46),
-              side: BorderSide(color: primaryColor.withValues(alpha: 0.35)),
+              minimumSize: const Size.fromHeight(48),
+              side: BorderSide(
+                color: primaryColor.withValues(alpha: 0.5),
+                width: 1.5,
+              ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
-              textStyle: const TextStyle(fontWeight: FontWeight.w700),
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 15,
+              ),
             ),
           ),
         ),
@@ -557,7 +588,9 @@ class _TeachingAssesstentScreenState extends State<TeachingAssesstentScreen> {
                   isScrollable: true,
                   tabAlignment: TabAlignment.start,
                   labelColor: Colors.white,
-                  unselectedLabelColor: isDark ? Colors.white70 : Colors.black54,
+                  unselectedLabelColor: isDark
+                      ? Colors.white70
+                      : Colors.black54,
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
                   indicator: BoxDecoration(
@@ -899,8 +932,7 @@ class _ExamTab extends StatelessWidget {
             icon: Icons.check_circle_outline,
             onPressed: onSubmit,
           ),
-          if (result.isNotEmpty)
-            _OutputCard(title: 'Exam Results', text: result),
+          if (result.isNotEmpty) _ExamResultCard(result: result),
         ],
       ],
     );
@@ -940,14 +972,22 @@ class _QaTab extends StatelessWidget {
           buttonLabel: loading ? 'Asking...' : 'Ask',
           onPressed: loading ? null : onAsk,
         ),
-        _OutputCard(title: 'Answer', text: answer),
+        _QaAnswerCard(
+          title: 'Answer',
+          text: answer,
+          loading: loading && followUpAnswer.isEmpty,
+        ),
         _QuestionBox(
           controller: followUpController,
           label: 'Follow-up',
           buttonLabel: 'Ask Follow-up',
           onPressed: loading ? null : onFollowUp,
         ),
-        _OutputCard(title: 'Follow-up Answer', text: followUpAnswer),
+        _QaAnswerCard(
+          title: 'Follow-up Answer',
+          text: followUpAnswer,
+          loading: loading && answer.isNotEmpty,
+        ),
       ],
     );
   }
@@ -1003,10 +1043,22 @@ class _SummaryTab extends StatelessWidget {
             ],
           ),
         ),
-        _OutputCard(title: 'Quick Recap', text: tldr),
-        _OutputCard(title: 'Key Terms & Definitions', text: terms),
-        _OutputCard(title: 'Structured Notes', text: notes),
-        _OutputCard(title: 'Paragraph Summary', text: paragraph),
+        _SummaryOutputCard(
+          title: 'Quick Recap',
+          icon: Icons.summarize_outlined,
+          text: tldr,
+        ),
+        _KeyTermsCard(termsRaw: terms),
+        _SummaryOutputCard(
+          title: 'Structured Notes',
+          icon: Icons.format_list_bulleted_rounded,
+          text: notes,
+        ),
+        _SummaryOutputCard(
+          title: 'Paragraph Summary',
+          icon: Icons.article_outlined,
+          text: paragraph,
+        ),
         _InputCard(
           child: Column(
             children: [
@@ -1041,14 +1093,168 @@ class _GeneratedQuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final options = question.options.isEmpty
-        ? 'No options'
-        : question.options.join('\n');
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? Colors.grey[800] : const Color(0xffE9EEF5);
+    final correctAnswerLetter = question.answer.trim().toUpperCase();
 
-    return _OutputCard(
-      title: 'Generated Question',
-      text:
-          '${question.question}\n\n$options\n\nCorrect Answer: ${question.answer}\n\nExplanation: ${question.explanation}',
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.help_outline_rounded, color: _primaryBlue, size: 20),
+              const SizedBox(width: 8),
+              const Text(
+                'Generated Question',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          // Question text
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[850] : Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: _borderColor),
+            ),
+            child: SelectableText(
+              question.question,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                height: 1.5,
+              ),
+            ),
+          ),
+          if (question.options.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            ...question.options.map((option) {
+              final optionLetter =
+                  option.trim().isNotEmpty &&
+                      option.trim()[0].toUpperCase() == correctAnswerLetter
+                  ? correctAnswerLetter
+                  : null;
+              final isCorrect =
+                  option.trim().toUpperCase().startsWith(correctAnswerLetter) &&
+                  question.options.length > 1;
+              return Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: isCorrect
+                      ? _primaryBlue.withValues(alpha: 0.1)
+                      : isDark
+                      ? Colors.grey[850]
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: isCorrect ? _primaryBlue : _borderColor,
+                    width: isCorrect ? 1.5 : 1,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        option,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: isCorrect ? _primaryBlue : null,
+                          fontWeight: isCorrect
+                              ? FontWeight.w600
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    if (isCorrect)
+                      const Icon(
+                        Icons.check_circle_rounded,
+                        color: _primaryBlue,
+                        size: 18,
+                      ),
+                  ],
+                ),
+              );
+            }),
+          ],
+          const SizedBox(height: 12),
+          // Correct Answer row
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.green.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.green.withValues(alpha: 0.4)),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.check_circle_outline,
+                  color: Colors.green,
+                  size: 18,
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  'Correct Answer: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+                Text(
+                  question.answer,
+                  style: const TextStyle(color: Colors.green),
+                ),
+              ],
+            ),
+          ),
+          if (question.explanation.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: _primaryBlue.withValues(alpha: 0.06),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: _primaryBlue.withValues(alpha: 0.2)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.lightbulb_outline,
+                    color: _primaryBlue,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SelectableText(
+                      question.explanation,
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.5,
+                        color: isDark ? Colors.white70 : Colors.black87,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -1158,8 +1364,9 @@ class _InputCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : const Color(0xffE9EEF5),
+        color: isDark ? Colors.grey[800] : _softBlue,
         borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _borderColor),
       ),
       child: child,
     );
@@ -1280,17 +1487,33 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Pick color based on difficulty part
+    final lower = text.toLowerCase();
+    Color bg, fg;
+    if (lower.contains('easy')) {
+      bg = _secondaryGreen.withValues(alpha: 0.15);
+      fg = _secondaryGreen;
+    } else if (lower.contains('medium')) {
+      bg = _accentOrange.withValues(alpha: 0.15);
+      fg = _accentOrange;
+    } else if (lower.contains('hard')) {
+      bg = Colors.red.withValues(alpha: 0.12);
+      fg = Colors.red;
+    } else {
+      bg = _primaryBlue.withValues(alpha: 0.12);
+      fg = _primaryBlue;
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: isDark ? Colors.blueGrey[700] : Colors.white,
+        color: bg,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: fg.withValues(alpha: 0.4)),
       ),
       child: Text(
         text,
-        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: fg),
       ),
     );
   }
@@ -1306,5 +1529,869 @@ String _badge(String level) {
       return 'Hard';
     default:
       return level;
+  }
+}
+
+// ─── Exam Results Card ───────────────────────────────────────────────────────
+
+class _ExamResultCard extends StatelessWidget {
+  const _ExamResultCard({required this.result});
+
+  final String result;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final lines = result.split('\n\n');
+    final scoreLine = lines.isNotEmpty ? lines.first : '';
+    final questionBlocks = lines.skip(1).toList();
+
+    // Parse score
+    final scoreMatch = RegExp(r'(\d+)/(\d+)').firstMatch(scoreLine);
+    final correct = int.tryParse(scoreMatch?.group(1) ?? '0') ?? 0;
+    final total = int.tryParse(scoreMatch?.group(2) ?? '1') ?? 1;
+    final percent = total > 0 ? (correct / total * 100).round() : 0;
+
+    Color scoreColor;
+    if (percent >= 70) {
+      scoreColor = Colors.green;
+    } else if (percent >= 40) {
+      scoreColor = Colors.orange;
+    } else {
+      scoreColor = Colors.red;
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[800] : const Color(0xffE9EEF5),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Score header
+          Row(
+            children: [
+              Icon(Icons.emoji_events_outlined, color: scoreColor, size: 22),
+              const SizedBox(width: 8),
+              const Text(
+                'Exam Results',
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          // Score pill
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+            decoration: BoxDecoration(
+              color: scoreColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: scoreColor.withValues(alpha: 0.4)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Score: $correct / $total',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: scoreColor,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: scoreColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '$percent%',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          // Individual question results
+          ...questionBlocks.map((block) {
+            final isCorrect = block.trimLeft().startsWith('Correct');
+            final blockColor = isCorrect ? Colors.green : Colors.red;
+            final bgColor = blockColor.withValues(alpha: 0.06);
+            final borderColor = blockColor.withValues(alpha: 0.3);
+
+            // Parse block lines
+            final blockLines = block.trim().split('\n');
+            final questionLine = blockLines.isNotEmpty ? blockLines[0] : '';
+            final yourAnswer = blockLines.firstWhere(
+              (l) => l.startsWith('Your answer:'),
+              orElse: () => '',
+            );
+            final correctAnswer = blockLines.firstWhere(
+              (l) => l.startsWith('Correct answer:'),
+              orElse: () => '',
+            );
+            final explanation = blockLines.firstWhere(
+              (l) => l.startsWith('Explanation:'),
+              orElse: () => '',
+            );
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: isDark ? Colors.grey[850] : bgColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: borderColor),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        isCorrect
+                            ? Icons.check_circle_rounded
+                            : Icons.cancel_rounded,
+                        color: blockColor,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          questionLine.replaceFirst(
+                            RegExp(r'^(Correct|Wrong) - '),
+                            '',
+                          ),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (yourAnswer.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    _ResultRow(
+                      label: 'Your answer',
+                      value: yourAnswer.replaceFirst('Your answer: ', ''),
+                      color: isCorrect ? Colors.green : Colors.red,
+                    ),
+                  ],
+                  if (correctAnswer.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    _ResultRow(
+                      label: 'Correct answer',
+                      value: correctAnswer.replaceFirst('Correct answer: ', ''),
+                      color: Colors.green,
+                    ),
+                  ],
+                  if (explanation.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: _primaryBlue.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.lightbulb_outline,
+                            color: _primaryBlue,
+                            size: 15,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              explanation.replaceFirst('Explanation: ', ''),
+                              style: TextStyle(
+                                fontSize: 12,
+                                height: 1.45,
+                                color: isDark ? Colors.white70 : Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResultRow extends StatelessWidget {
+  const _ResultRow({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          '$label: ',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
+        ),
+        Expanded(
+          child: Text(value, style: TextStyle(fontSize: 13, color: color)),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Key Terms Card ──────────────────────────────────────────────────────────
+
+class _KeyTermsCard extends StatelessWidget {
+  const _KeyTermsCard({required this.termsRaw});
+  final String termsRaw;
+
+  List<Map<String, String>> _parseTerms(String raw) {
+    if (raw.trim().isEmpty) return [];
+    try {
+      // Try JSON parse
+      final trimmed = raw.trim();
+      // Remove leading/trailing brackets if present
+      final jsonStr = trimmed.startsWith('[') ? trimmed : '[$trimmed]';
+      final decoded = (jsonStr.contains('"term"'))
+          ? _extractTermsFromJson(jsonStr)
+          : <Map<String, String>>[];
+      if (decoded.isNotEmpty) return decoded;
+    } catch (_) {}
+    return [];
+  }
+
+  List<Map<String, String>> _extractTermsFromJson(String json) {
+    final results = <Map<String, String>>[];
+    final termPattern = RegExp(r'"term"\s*:\s*"([^"]+)"');
+    final defPattern = RegExp(r'"definition"\s*:\s*"([^"]+)"');
+    final terms = termPattern
+        .allMatches(json)
+        .map((m) => m.group(1) ?? '')
+        .toList();
+    final defs = defPattern
+        .allMatches(json)
+        .map((m) => m.group(1) ?? '')
+        .toList();
+    for (var i = 0; i < terms.length; i++) {
+      results.add({
+        'term': terms[i],
+        'definition': i < defs.length ? defs[i] : '',
+      });
+    }
+    return results;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final parsed = _parseTerms(termsRaw);
+
+    if (termsRaw.trim().isEmpty) {
+      return _SummaryOutputCard(
+        title: 'Key Terms & Definitions',
+        icon: Icons.menu_book_outlined,
+        text: '',
+      );
+    }
+
+    if (parsed.isEmpty) {
+      // fallback to plain text
+      return _SummaryOutputCard(
+        title: 'Key Terms & Definitions',
+        icon: Icons.menu_book_outlined,
+        text: termsRaw,
+      );
+    }
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[800] : _softBlue,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header band
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: _primaryBlue.withValues(alpha: 0.08),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(17),
+              ),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.menu_book_outlined,
+                  color: _primaryBlue,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  'Key Terms & Definitions',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _secondaryGreen.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${parsed.length} terms',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: _secondaryGreen,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              children: parsed.asMap().entries.map((entry) {
+                final i = entry.key;
+                final item = entry.value;
+                return Container(
+                  margin: EdgeInsets.only(
+                    bottom: i < parsed.length - 1 ? 10 : 0,
+                  ),
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.grey[850] : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _borderColor),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: _accentOrange.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '${i + 1}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: _accentOrange,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              item['term'] ?? '',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if ((item['definition'] ?? '').isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: _softBlue,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            item['definition'] ?? '',
+                            style: TextStyle(
+                              fontSize: 13,
+                              height: 1.5,
+                              color: isDark ? Colors.white70 : Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Summary Output Card ─────────────────────────────────────────────────────
+
+class _SummaryOutputCard extends StatelessWidget {
+  const _SummaryOutputCard({
+    required this.title,
+    required this.icon,
+    required this.text,
+  });
+  final String title;
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[800] : _softBlue,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: _primaryBlue.withValues(alpha: 0.08),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(17),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: _primaryBlue, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: text.trim().isEmpty
+                ? Text(
+                    'Output will appear here.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? Colors.white38 : Colors.black38,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  )
+                : _MarkdownText(text: text.trim(), isDark: isDark),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Q&A Answer Card ─────────────────────────────────────────────────────────
+
+class _QaAnswerCard extends StatelessWidget {
+  const _QaAnswerCard({
+    required this.title,
+    required this.text,
+    required this.loading,
+  });
+  final String title;
+  final String text;
+  final bool loading;
+
+  /// Strip leading {"score":"..."} prefix that the API injects
+  static final _scorePrefix = RegExp(r'^\{"score"\s*:\s*"[^"]*"\}');
+
+  String _clean(String raw) => raw.replaceFirst(_scorePrefix, '').trimLeft();
+
+  bool? _scoreValue(String raw) {
+    final m = RegExp(r'"score"\s*:\s*"([^"]+)"').firstMatch(raw);
+    if (m == null) return null;
+    return m.group(1)?.toLowerCase() == 'yes';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cleaned = _clean(text);
+    final isEmpty = cleaned.trim().isEmpty;
+    final scoreOk = _scoreValue(text); // null if no score prefix yet
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: isDark ? Colors.grey[800] : _softBlue,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: _borderColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header ──────────────────────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: _primaryBlue.withValues(alpha: 0.08),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(17),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: _primaryBlue.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.school_outlined,
+                    color: _primaryBlue,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                if (loading)
+                  const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: _primaryBlue,
+                    ),
+                  )
+                else if (scoreOk != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: scoreOk
+                          ? _secondaryGreen.withValues(alpha: 0.15)
+                          : Colors.red.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: scoreOk
+                            ? _secondaryGreen.withValues(alpha: 0.5)
+                            : Colors.red.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          scoreOk
+                              ? Icons.check_circle_rounded
+                              : Icons.cancel_rounded,
+                          size: 13,
+                          color: scoreOk ? _secondaryGreen : Colors.red,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          scoreOk ? 'On-Topic' : 'Off-Topic',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: scoreOk ? _secondaryGreen : Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          // ── Body ────────────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: isEmpty && !loading
+                ? Text(
+                    'Answer will appear here.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? Colors.white38 : Colors.black38,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  )
+                : _MarkdownText(text: cleaned, isDark: isDark),
+          ),
+        ],
+      ),
+    );
+  }
+}
+// ─── Markdown Text Renderer ──────────────────────────────────────────────────
+// Lightweight markdown parser — no external package needed.
+// Handles: ## headings, **bold**, `code`, ```code blocks```, - bullets, blank lines.
+
+class _MarkdownText extends StatelessWidget {
+  const _MarkdownText({required this.text, required this.isDark});
+  final String text;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    final lines = text.split('\n');
+    final widgets = <Widget>[];
+    bool inCodeBlock = false;
+    final codeLines = <String>[];
+
+    void flushCodeBlock() {
+      if (codeLines.isEmpty) return;
+      widgets.add(
+        Container(
+          width: double.infinity,
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isDark
+                ? Colors.grey[900]
+                : const Color(0xFF0D1B4B).withValues(alpha: 0.06),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: _borderColor),
+          ),
+          child: SelectableText(
+            codeLines.join('\n'),
+            style: TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 12.5,
+              height: 1.55,
+              color: isDark ? Colors.greenAccent[200] : const Color(0xFF1D4ED8),
+            ),
+          ),
+        ),
+      );
+      codeLines.clear();
+    }
+
+    for (var i = 0; i < lines.length; i++) {
+      final line = lines[i];
+
+      // Code block toggle
+      if (line.trimLeft().startsWith('```')) {
+        if (inCodeBlock) {
+          inCodeBlock = false;
+          flushCodeBlock();
+        } else {
+          inCodeBlock = true;
+        }
+        continue;
+      }
+
+      if (inCodeBlock) {
+        codeLines.add(line);
+        continue;
+      }
+
+      // H2 heading  ## ...
+      if (line.startsWith('## ')) {
+        widgets.add(const SizedBox(height: 10));
+        widgets.add(
+          Text(
+            line.substring(3).trim(),
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: _primaryBlue,
+            ),
+          ),
+        );
+        widgets.add(const SizedBox(height: 4));
+        continue;
+      }
+
+      // H3 heading  ### ...
+      if (line.startsWith('### ')) {
+        widgets.add(
+          Text(
+            line.substring(4).trim(),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: isDark ? Colors.white : _neutralDark,
+            ),
+          ),
+        );
+        widgets.add(const SizedBox(height: 2));
+        continue;
+      }
+
+      // Bullet  - ... or   - ...
+      final bulletMatch = RegExp(r'^(\s*)- (.+)').firstMatch(line);
+      if (bulletMatch != null) {
+        final indent = bulletMatch.group(1)!.length;
+        final content = bulletMatch.group(2)!;
+        widgets.add(
+          Padding(
+            padding: EdgeInsets.only(left: indent * 6.0, top: 3, bottom: 3),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 6, right: 8),
+                  child: Container(
+                    width: indent == 0 ? 6 : 4,
+                    height: indent == 0 ? 6 : 4,
+                    decoration: BoxDecoration(
+                      color: indent == 0 ? _primaryBlue : _secondaryGreen,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: _InlineText(text: content, isDark: isDark),
+                ),
+              ],
+            ),
+          ),
+        );
+        continue;
+      }
+
+      // Blank line = spacing
+      if (line.trim().isEmpty) {
+        widgets.add(const SizedBox(height: 8));
+        continue;
+      }
+
+      // Normal paragraph line
+      widgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 2),
+          child: _InlineText(text: line, isDark: isDark),
+        ),
+      );
+    }
+
+    // Flush any unclosed code block
+    if (inCodeBlock) flushCodeBlock();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
+    );
+  }
+}
+
+/// Renders inline markdown: **bold**, `code`, plain text.
+class _InlineText extends StatelessWidget {
+  const _InlineText({required this.text, required this.isDark});
+  final String text;
+  final bool isDark;
+
+  List<InlineSpan> _parse(String raw) {
+    final spans = <InlineSpan>[];
+    // Pattern: **bold** or `code`
+    final pattern = RegExp(r'\*\*(.+?)\*\*|`([^`]+)`');
+    int cursor = 0;
+
+    for (final match in pattern.allMatches(raw)) {
+      if (match.start > cursor) {
+        spans.add(TextSpan(text: raw.substring(cursor, match.start)));
+      }
+      if (match.group(1) != null) {
+        // **bold**
+        spans.add(
+          TextSpan(
+            text: match.group(1),
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        );
+      } else if (match.group(2) != null) {
+        // `code`
+        spans.add(
+          TextSpan(
+            text: match.group(2),
+            style: TextStyle(
+              fontFamily: 'monospace',
+              fontSize: 12.5,
+              color: _primaryBlue,
+              backgroundColor: _primaryBlue.withValues(alpha: 0.08),
+            ),
+          ),
+        );
+      }
+      cursor = match.end;
+    }
+
+    if (cursor < raw.length) {
+      spans.add(TextSpan(text: raw.substring(cursor)));
+    }
+
+    return spans;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SelectableText.rich(
+      TextSpan(
+        style: TextStyle(
+          fontSize: 14,
+          height: 1.6,
+          color: isDark ? Colors.white : Colors.black87,
+        ),
+        children: _parse(text),
+      ),
+    );
   }
 }
