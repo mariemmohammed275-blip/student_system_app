@@ -4,6 +4,18 @@ import 'package:student_systemv1/API/auth_service.dart';
 class Header extends StatelessWidget {
   const Header({super.key});
 
+  // Helper method to determine the time of day
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Good Morning';
+    } else if (hour < 17) {
+      return 'Good Afternoon';
+    } else {
+      return 'Good Evening';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final student = AuthService.currentStudent;
@@ -32,9 +44,10 @@ class Header extends StatelessWidget {
                   // Let the theme handle the text color automatically!
                 ),
               ),
-              const Text(
-                'Good Morning',
-                style: TextStyle(
+              Text(
+                // Call the helper method here 👇
+                _getGreeting(),
+                style: const TextStyle(
                   fontFamily: 'Roboto',
                   fontSize: 14,
                   color: Colors.grey, // Grey is usually fine in both modes
