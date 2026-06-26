@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:student_systemv1/config/api_config.dart';
+import 'package:student_systemv1/models/notification.dart';
 import '../models/event.dart';
 
 class ApiService {
@@ -93,6 +94,26 @@ class ApiService {
       return [];
     } catch (e) {
       print("getEvents error: $e");
+      return [];
+    }
+  }
+
+  // -----------------------------
+  // NOTIFICATIONS API
+  // -----------------------------
+  static Future<List<NotificationModel>> getNotifications() async {
+    try {
+      // Changed from _dio.get to _dio.post 👇
+      final response = await _dio.post('/notifications/list');
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        List<dynamic> data = response.data['data'];
+        return data.map((json) => NotificationModel.fromJson(json)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      print("getNotifications error: $e");
       return [];
     }
   }
