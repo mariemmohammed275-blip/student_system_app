@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:student_systemv1/Screens/Services/Features/Attendance/screens/attendance_qr_scan_screen.dart';
+import 'package:student_systemv1/Screens/Services/Features/Grades/grades_screen.dart';
+import 'package:student_systemv1/Screens/Services/Features/Payments/payments_screen.dart';
 
 class QuickActions extends StatelessWidget {
   const QuickActions({super.key});
@@ -65,17 +67,25 @@ class QuickActions extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              actionItem(context: context, icon: Icons.school, title: "Grades"),
+              // 👇 Added onTap and imported Grades()
+              actionItem(
+                context: context,
+                icon: Icons.school,
+                title: "Grades",
+                onTap: () => Get.to(() => Grades()),
+              ),
               actionItem(
                 context: context,
                 icon: Icons.qr_code_scanner,
                 title: "QR\nAttendance",
                 onTap: () => Get.to(() => const AttendanceQrScanScreen()),
               ),
+              // 👇 Added onTap and imported Payments()
               actionItem(
                 context: context,
                 icon: Icons.account_balance_wallet,
                 title: "Payments",
+                onTap: () => Get.to(() => Payments()),
               ),
             ],
           ),
