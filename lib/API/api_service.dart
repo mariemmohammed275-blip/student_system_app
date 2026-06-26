@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:student_systemv1/config/api_config.dart';
 import 'package:student_systemv1/models/notification.dart';
+import 'package:student_systemv1/models/timetable_item.dart';
 import '../models/event.dart';
 
 class ApiService {
@@ -114,6 +115,25 @@ class ApiService {
       return [];
     } catch (e) {
       print("getNotifications error: $e");
+      return [];
+    }
+  }
+
+  // -----------------------------
+  // TIMETABLE API
+  // -----------------------------
+  static Future<List<TimetableItem>> getTimetable() async {
+    try {
+      final response = await _dio.get('/students/timetable');
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        List<dynamic> data = response.data['data'];
+        return data.map((json) => TimetableItem.fromJson(json)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      print("getTimetable error: $e");
       return [];
     }
   }

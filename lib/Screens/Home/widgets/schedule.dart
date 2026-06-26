@@ -1,7 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:student_systemv1/models/timetable_item.dart';
+import 'package:student_systemv1/API/api_service.dart';
 
-class Schedule extends StatelessWidget {
+class Schedule extends StatefulWidget {
   const Schedule({super.key});
+
+  @override
+  State<Schedule> createState() => _ScheduleState();
+}
+
+class _ScheduleState extends State<Schedule> {
+  late DateTime selectedDate;
+  late List<DateTime> weekDates;
+  late Future<List<TimetableItem>> scheduleFuture;
+
+  final List<Color> cardColors = [
+    Colors.purpleAccent,
+    Colors.blueAccent,
+    const Color.fromARGB(255, 92, 230, 198),
+    Colors.orangeAccent,
+    Colors.pinkAccent,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = DateTime.now();
+    weekDates = List.generate(
+      5,
+      (index) => DateTime.now().add(Duration(days: index)),
+    );
+    scheduleFuture = ApiService.getTimetable();
+  }
 
   // 📚 الكارد
   Widget classCard({
@@ -18,14 +49,12 @@ class Schedule extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        // Switch card background to dark grey in dark mode
         color: isDark ? Colors.grey[800] : const Color(0xffEEF2F7),
         borderRadius: BorderRadius.circular(5),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ➤ السهم + الوقت
           Column(
             children: [
               Row(
@@ -33,7 +62,6 @@ class Schedule extends StatelessWidget {
                   Icon(
                     Icons.chevron_right,
                     size: 18,
-                    // Remove hardcoded black
                     color: isDark ? Colors.white : Colors.black,
                   ),
                   const SizedBox(width: 4),
@@ -41,7 +69,6 @@ class Schedule extends StatelessWidget {
                     time,
                     style: TextStyle(
                       fontSize: 12,
-                      // Remove hardcoded black
                       color: isDark ? Colors.white70 : Colors.black,
                     ),
                   ),
@@ -49,48 +76,39 @@ class Schedule extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(width: 10),
-
-          // الخط الملون
           Container(
             width: 2,
             height: 62,
             decoration: BoxDecoration(
-              color:
-                  color, // The accent color (purple, blue, etc.) stays the same!
+              color: color,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-
           const SizedBox(width: 10),
-
-          // النصوص
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  // If the text color matches the accent color, keep it, but brighten it slightly if needed
                   style: TextStyle(
                     color: isDark ? color.withOpacity(0.9) : color,
                     fontWeight: FontWeight.bold,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
-
                 if (!isMissing)
                   Text(
                     subtitle,
                     style: TextStyle(
-                      // Remove hardcoded black
                       color: isDark ? Colors.white70 : Colors.black,
                       fontSize: 12,
                       fontFamily: 'Robot',
                     ),
                   ),
-
                 if (isMissing) ...[
                   Row(
                     children: [
@@ -99,7 +117,6 @@ class Schedule extends StatelessWidget {
                       Text(
                         "Missing assignment",
                         style: TextStyle(
-                          // Remove hardcoded black
                           color: isDark ? Colors.white70 : Colors.black,
                           fontSize: 12,
                         ),
@@ -116,7 +133,8 @@ class Schedule extends StatelessWidget {
   }
 
   // 📅 التاريخ (header)
-  Widget dateHeader(BuildContext context) {
+  // 👇 Now takes the schedule list to check for classes
+  Widget dateHeader(BuildContext context, List<TimetableItem> schedule) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -127,22 +145,34 @@ class Schedule extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text(
-            "October 18th, 2025",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          Text(
+            DateFormat('MMMM d, yyyy').format(selectedDate),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
-
           const SizedBox(height: 14),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              dayItem(context, "18", "Mon", selected: true, badge: "2"),
-              dayItem(context, "19", "Tue", badge: "1"),
-              dayItem(context, "20", "Wed"),
-              dayItem(context, "21", "Thu", badge: "3"),
-              dayItem(context, "22", "Sun"),
-            ],
+            children: weekDates.map((date) {
+              // Check if the current day has any matching classes in the schedule
+              String dayName = DateFormat('EEEE').format(date);
+              bool hasClasses = schedule.any(
+                (item) => item.day.toLowerCase() == dayName.toLowerCase(),
+              );
+
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedDate = date;
+                  });
+                },
+                child: dayItem(
+                  context,
+                  date,
+                  selected: date.day == selectedDate.day,
+                  hasClasses: hasClasses, // Pass it down to the UI
+                ),
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -152,12 +182,13 @@ class Schedule extends StatelessWidget {
   // 📅 عنصر اليوم
   Widget dayItem(
     BuildContext context,
-    String day,
-    String week, {
+    DateTime date, {
     bool selected = false,
-    String? badge,
+    bool hasClasses = false,
   }) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
+    String dayNum = DateFormat('d').format(date);
+    String weekAbbr = DateFormat('E').format(date);
 
     return SizedBox(
       width: 55,
@@ -172,7 +203,7 @@ class Schedule extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  day,
+                  dayNum,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 23,
@@ -181,11 +212,9 @@ class Schedule extends StatelessWidget {
                         : (isDark ? Colors.white : Colors.black),
                   ),
                 ),
-
                 const SizedBox(height: 2),
-
                 Text(
-                  week,
+                  weekAbbr,
                   style: TextStyle(
                     fontSize: 14,
                     color: selected ? Colors.white70 : Colors.grey,
@@ -194,32 +223,22 @@ class Schedule extends StatelessWidget {
               ],
             ),
           ),
-
-          //const SizedBox(height: 3),
-
-          // 🔴 badge (fixed size so layout never shifts)
+          const SizedBox(height: 6),
+          // 🔴 Red dot indicator for classes
           SizedBox(
-            height: 16,
-            child: badge != null
+            height: 6,
+            child: hasClasses
                 ? Container(
-                    width: 18,
-                    height: 18,
+                    width: 6,
+                    height: 6,
                     decoration: const BoxDecoration(
-                      color: Colors.red,
+                      color: Colors.redAccent,
                       shape: BoxShape.circle,
                     ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      badge,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                   )
-                : const SizedBox(),
+                : const SizedBox(), // Empty if no classes
           ),
+          const SizedBox(height: 4),
         ],
       ),
     );
@@ -240,48 +259,87 @@ class Schedule extends StatelessWidget {
               fontFamily: 'Robot',
             ),
           ),
-
           const SizedBox(height: 12),
 
-          // 📅 header
-          dateHeader(context),
+          // 👇 FutureBuilder now wraps BOTH the Header and the List
+          FutureBuilder<List<TimetableItem>>(
+            future: scheduleFuture,
+            builder: (context, snapshot) {
+              // While loading, show the calendar with NO dots, and a spinner below
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Column(
+                  children: [
+                    dateHeader(context, []),
+                    const Padding(
+                      padding: EdgeInsets.all(30.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  ],
+                );
+              }
 
-          const SizedBox(height: 12),
+              if (snapshot.hasError) {
+                return Column(
+                  children: [
+                    dateHeader(context, []),
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Text("Error loading schedule"),
+                      ),
+                    ),
+                  ],
+                );
+              }
 
-          // 📚 المواد
-          classCard(
-            context: context,
-            time: "10:10 AM",
-            title: "EC 202 – Principles Microeconomics",
-            subtitle: "Room 302",
-            color: Colors
-                .purpleAccent, // Switched to Accent for better dark mode visibility
-          ),
+              List<TimetableItem> fullSchedule = snapshot.data ?? [];
+              String selectedDayName = DateFormat('EEEE').format(selectedDate);
 
-          classCard(
-            context: context,
-            time: "11:10 AM",
-            title: "FN 215 – Financial Management",
-            subtitle: "Room 111",
-            color: Colors.blueAccent,
-          ),
+              // Filter classes matching the selected day of the week
+              List<TimetableItem> dailyClasses = fullSchedule
+                  .where(
+                    (item) =>
+                        item.day.toLowerCase() == selectedDayName.toLowerCase(),
+                  )
+                  .toList();
 
-          classCard(
-            context: context,
-            time: "11:59 PM",
-            title: "EC 203 – Principles Macroeconomics",
-            subtitle: "",
-            color: const Color.fromARGB(255, 92, 230, 198),
-            isMissing: true,
-          ),
+              return Column(
+                children: [
+                  // 1. Render Date Header WITH dots based on full schedule
+                  dateHeader(context, fullSchedule),
+                  const SizedBox(height: 12),
 
-          classCard(
-            context: context,
-            time: "11:59 PM",
-            title: "MGT 101 – Organization Management",
-            subtitle: "",
-            color: Colors.orangeAccent,
-            isMissing: true,
+                  // 2. Render Classes List based on selected date
+                  if (dailyClasses.isEmpty)
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Text(
+                          "No classes for $selectedDayName! 🎉",
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    ...dailyClasses.asMap().entries.map((entry) {
+                      int index = entry.key;
+                      TimetableItem classInfo = entry.value;
+
+                      return classCard(
+                        context: context,
+                        time: "${classInfo.startTime} - ${classInfo.endTime}",
+                        title:
+                            "${classInfo.courseCode} - ${classInfo.courseName}",
+                        subtitle: classInfo.room,
+                        color: cardColors[index % cardColors.length],
+                      );
+                    }).toList(),
+                ],
+              );
+            },
           ),
         ],
       ),
