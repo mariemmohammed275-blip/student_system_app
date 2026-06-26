@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:student_systemv1/config/api_config.dart';
+import '../models/event.dart';
 
 class ApiService {
   static const String baseUrl = ApiConfig.baseUrl;
@@ -74,6 +75,25 @@ class ApiService {
     } on DioError catch (e) {
       print("Login error: ${e.response?.data ?? e.message}");
       return null;
+    }
+  }
+
+  // -----------------------------
+  // EVENTS API
+  // -----------------------------
+  static Future<List<FacultyEvent>> getEvents() async {
+    try {
+      final response = await _dio.get('/students/events');
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        List<dynamic> data = response.data['data'];
+        return data.map((json) => FacultyEvent.fromJson(json)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      print("getEvents error: $e");
+      return [];
     }
   }
 

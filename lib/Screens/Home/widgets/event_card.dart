@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../models/event.dart';
 
 class Event extends StatelessWidget {
@@ -11,47 +10,82 @@ class Event extends StatelessWidget {
     return Card(
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      clipBehavior: Clip.antiAlias, // makes corners round for the image too
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 🖼️ Event image
-          SizedBox(
-            height: 150,
-            width: 300, // card width
-            child: Image.asset(event.image, fit: BoxFit.cover),
-          ),
-
-          // 📝 Event details
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  event.title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      clipBehavior: Clip.antiAlias,
+      child: SizedBox(
+        width:
+            300, // Explicitly set width to keep cards uniform in horizontal scroll
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // 🖼️ Event image
+            SizedBox(
+              height: 150,
+              width: double.infinity,
+              child: Image.network(
+                event.image,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.broken_image, color: Colors.grey),
                 ),
-                SizedBox(height: 5),
-                Row(
-                  children: [
-                    Icon(Icons.location_on, color: Colors.grey, size: 16),
-                    SizedBox(width: 5),
-                    Text(event.location, style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-                SizedBox(height: 5),
-                Row(
-                  children: [
-                    Icon(Icons.calendar_today, color: Colors.grey, size: 16),
-                    SizedBox(width: 5),
-                    Text(event.date, style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+
+            // 📝 Event details
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    event.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        color: Colors.grey,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 5),
+                      Expanded(
+                        child: Text(
+                          event.location,
+                          style: const TextStyle(color: Colors.grey),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today,
+                        color: Colors.grey,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        '${event.date} • ${event.startTime}',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
