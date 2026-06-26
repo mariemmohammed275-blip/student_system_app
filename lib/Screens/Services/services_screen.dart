@@ -8,7 +8,7 @@ import 'Features/Grades/grades_screen.dart';
 import 'Features/SelectedCourses/selected_courses.dart';
 import 'Features/CourseEnrollment/course_enrollment.dart';
 import 'Features/Payments/payments_screen.dart';
-import 'Features/Schedules/schedules.dart';
+import 'Features/Schedules/schedules_screen.dart';
 import 'Features/AI/ai_features_screen.dart';
 
 class ServicesScreen extends StatelessWidget {
