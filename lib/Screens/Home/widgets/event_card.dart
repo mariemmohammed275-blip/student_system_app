@@ -12,8 +12,7 @@ class Event extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
-        width:
-            300, // Explicitly set width to keep cards uniform in horizontal scroll
+        width: 300,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -68,6 +67,7 @@ class Event extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Icon(
                         Icons.calendar_today,
@@ -75,9 +75,14 @@ class Event extends StatelessWidget {
                         size: 16,
                       ),
                       const SizedBox(width: 5),
-                      Text(
-                        '${event.date} • ${event.startTime}',
-                        style: const TextStyle(color: Colors.grey),
+                      Expanded(
+                        child: Text(
+                          // Added the end time right here 👇
+                          '${event.date} • ${event.startTime} - ${event.endTime}',
+                          style: const TextStyle(color: Colors.grey),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
