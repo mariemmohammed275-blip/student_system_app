@@ -4,7 +4,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import 'Home/home_screen.dart';
 import 'Services/services_screen.dart';
-import 'Community/community_screen.dart';
+//import 'Community/community_screen.dart';
 import 'Profile/profile_screen.dart';
 import 'Setting/settings_screen.dart';
 
@@ -15,7 +15,7 @@ class NavController extends GetxController {
   final screens = [
     () => const HomeScreen(),
     () => ServicesScreen(),
-    () => const CommunityScreen(),
+    //() => const CommunityScreen(),
     () => const ProfileScreen(),
     () => SettingsScreen(),
   ];
@@ -76,17 +76,12 @@ class MainScreen extends StatelessWidget {
         bottomNavigationBar: CurvedNavigationBar(
           index: navController.selectedIndex.value,
           backgroundColor: Colors.transparent,
-
-          // 5. Change the main Navigation Bar color dynamically!
           color: isDark ? Colors.grey[900]! : Colors.white,
-
-          // The selected "floating" button stays blue because it looks great in both themes
           buttonBackgroundColor: const Color(0xFF2A73FF),
           height: 70,
           animationDuration: const Duration(milliseconds: 300),
 
           items: [
-            // Pass the context to all nav items
             navItem(context, Icons.home_outlined, "Home", 0),
             navItem(
               context,
@@ -94,9 +89,19 @@ class MainScreen extends StatelessWidget {
               "Services",
               1,
             ),
-            navItem(context, Icons.people_outline, "Community", 2),
-            navItem(context, Icons.person_outline, "Profile", 3),
-            navItem(context, Icons.settings_outlined, "Settings", 4),
+            // Removed Community navItem
+            navItem(
+              context,
+              Icons.person_outline,
+              "Profile",
+              2,
+            ), // Updated index
+            navItem(
+              context,
+              Icons.settings_outlined,
+              "Settings",
+              3,
+            ), // Updated index
           ],
 
           onTap: (index) {
