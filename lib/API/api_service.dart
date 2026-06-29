@@ -120,6 +120,26 @@ class ApiService {
   }
 
   // -----------------------------
+  // COURSE ANNOUNCEMENTS API
+  // -----------------------------
+  static Future<List<NotificationModel>> getCourseAnnouncements() async {
+    try {
+      final response = await _dio.get('/announcements/student');
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        List<dynamic> data = response.data['data'];
+        // Reusing the NotificationModel since we updated it to handle 'content'
+        return data.map((json) => NotificationModel.fromJson(json)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      print("getCourseAnnouncements error: $e");
+      return [];
+    }
+  }
+
+  // -----------------------------
   // TIMETABLE API
   // -----------------------------
   static Future<List<TimetableItem>> getTimetable() async {

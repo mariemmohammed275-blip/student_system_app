@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'Features/Attendance/screens/attendance_details_screen.dart';
-import 'Features/Exams/exams.dart';
+import 'Features/Meetings/online_meetings_screen.dart';
 import 'Features/Grades/grades_screen.dart';
 import 'Features/SelectedCourses/selected_courses.dart';
 import 'Features/CourseEnrollment/course_enrollment.dart';
@@ -28,9 +28,9 @@ class ServicesScreen extends StatelessWidget {
       'page': () => Schedules(), // Removed const
     },
     {
-      'icon': Icons.quiz,
-      'title': 'Exams & Results',
-      'page': () => Exams(),
+      'icon': Icons.video_call,
+      'title': 'Online Meetings',
+      'page': () => OnlineMeetingsScreen(),
     }, // Removed const
     {
       'icon': Icons.payment,
